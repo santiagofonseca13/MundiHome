@@ -9,6 +9,7 @@
     tools:context=".MainActivity">
 
     <RelativeLayout
+        android:id="@+id/ToolbarRl"
         android:layout_width="match_parent"
         android:layout_height="@dimen/m_button_height">
 
@@ -29,6 +30,7 @@
 
     <FrameLayout
         android:id="@+id/FragmentL1"
+        android:layout_below="@id/ToolbarRl"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_above="@+id/View1" />
