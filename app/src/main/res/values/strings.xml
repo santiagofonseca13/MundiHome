@@ -9,7 +9,6 @@
 
     <string name="TituloR1">MundiHome</string>
 
-    <string name="Ingresar_email">Ingresar con email</string>
     <string name="Ingresar_google">Ingresar con google</string>
     
     <string name="Txt_login">Login de usuario</string>
@@ -17,7 +16,7 @@
     <string name="Et_password">Contraseña</string>"
     <string name="Btn_ingresar">Ingresar</string>
     <string name="Txt_no_cuenta">¿No tienes una cuenta?</string>
-    <string name="Txt_registrarme">Registrarme</string>
+    <string name="Txt_registrarme">REGISTRARME</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
