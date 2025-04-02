@@ -16,5 +16,9 @@ class OpcionesLogin : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityOpcionesLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.TxtRegistrarme.setOnClickListener {
+            startActivity(Intent(this@OpcionesLogin, Registro_email::class.java))
+        }
     }
 }
