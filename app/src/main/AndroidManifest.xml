@@ -15,9 +15,6 @@
         android:theme="@style/Theme.Mundihome"
         tools:targetApi="31">
         <activity
-            android:name=".Opciones_Login.Login_email"
-            android:exported="false" />
-        <activity
             android:name=".OpcionesLogin"
             android:exported="true">
             <intent-filter>
