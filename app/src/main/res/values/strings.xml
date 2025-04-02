@@ -22,6 +22,24 @@
     <string name="Et_r_password">Repetir Contraseña</string>
     <string name="Btn_registrar">Registrar</string>
 
+    <!-- Perfil de Usuario -->
+    <string name="Txt_perfil">Perfil de Usuario</string>
+    <string name="Txt_informacion">Información</string>
+    <string name="Txt_nombres">Nombres</string>"
+    <string name="Tv_nombres">Nombres Completos</string>
+    <string name="Txt_email">Email</string>
+    <string name="Tv_email">Email</string>"
+    <string name="Txt_nacimiento">Fecha de Nacimiento:</string>
+    <string name="Tv_nacimiento">dd/mm/aaaa</string>
+    <string name="Txt_miembro">Miembro desde: </string>
+    <string name="Tv_miembro">dd/mm/aaaa</string>
+    <string name="Txt_telefono">telefono</string>
+    <string name="Tv_telefono">99999999999</string>
+    <string name="Txt_estado_cuenta">Estado de cuenta</string>
+    <string name="Tv_estado_cuenta">No verificado</string>
+
+    <string name="TxtOpciones">Opciones</string>
+    <string name="Btn_editar_perfil">Editar perfil</string>
     <string name="Btn_cerrar_sesión">Cerrar sesión</string>
 
     <!-- TODO: Remove or change this placeholder text -->
