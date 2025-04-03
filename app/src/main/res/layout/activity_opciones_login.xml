@@ -70,6 +70,7 @@
             android:id="@+id/Btn_ingresar"
             android:text="@string/Btn_ingresar"
             android:textAllCaps="true"
+            android:backgroundTint="#3B8E3B"
             android:layout_marginTop="15dp"
             android:layout_width="180dp"
             android:layout_height="@dimen/m_button_height"/>
@@ -108,6 +109,7 @@
             android:id="@+id/Ingresar_google"
             android:text="@string/Ingresar_google"
             android:textAllCaps="true"
+            android:backgroundTint="#7C81D5"
             android:layout_width="match_parent"
             android:layout_height="@dimen/m_button_height"
             app:cornerRadius="8dp"/>
