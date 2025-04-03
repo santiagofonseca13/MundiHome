@@ -11,7 +11,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.signin.internal.SignInClientImpl
 import com.google.firebase.auth.FirebaseAuth
@@ -24,7 +26,7 @@ class OpcionesLogin : AppCompatActivity() {
     private lateinit var binding: ActivityOpcionesLoginBinding
 
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var mGoogleSignInClient : GoogleSignInClient
+    private lateinit var mGoogleSignInClient: GoogleSignInClient
     private lateinit var progressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,7 +46,6 @@ class OpcionesLogin : AppCompatActivity() {
             .requestEmail()
             .build()
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
-
 
         progressDialog = ProgressDialog(this)
         progressDialog.setTitle("Espere por favor")
@@ -94,7 +95,7 @@ class OpcionesLogin : AppCompatActivity() {
                 }
 
             }
-            .addOnSuccessListener { e->
+            .addOnFailureListener { e ->
                 Toast.makeText(this, "${e.message}",Toast.LENGTH_SHORT).show()
             }
     }

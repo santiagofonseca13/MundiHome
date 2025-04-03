@@ -59,7 +59,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.11.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-database")
-    implementation("androidx.credentials:credentials-play-services-auth:1.3.0")
+    implementation("com.google.android.gms:play-services-auth:20.7.0")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }
