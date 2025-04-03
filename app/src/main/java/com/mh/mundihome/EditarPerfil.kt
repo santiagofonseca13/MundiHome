@@ -22,6 +22,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
 import com.mh.mundihome.databinding.ActivityEditarPerfilBinding
 
 class EditarPerfil : AppCompatActivity() {
@@ -83,11 +84,11 @@ class EditarPerfil : AppCompatActivity() {
                         val codigo = codTelefono.replace("+", "").toInt() //+51 - 51
                         binding.selectorCod.setCountryForPhoneCode(codigo)
                     } catch (e: Exception) {
-                        Toast.makeText(
+                        /* Toast.makeText(
                             this@EditarPerfil,
                             "${e.message}",
                             Toast.LENGTH_SHORT
-                        ).show()
+                        ).show() */
                     }
                 }
 
@@ -96,6 +97,51 @@ class EditarPerfil : AppCompatActivity() {
                 }
             })
 
+    }
+
+    private fun subirImagenStorage() {
+        progressDialog.setMessage("Subiendo imagen a Storage")
+        progressDialog.show()
+
+        val rutaImagen = "ImagenesPerfil/" + firebaseAuth.uid
+        val ref = FirebaseStorage.getInstance().getReference(rutaImagen)
+        ref.putFile(imageUri!!)
+            .addOnSuccessListener { taskSnapshot ->
+                val uriTask = taskSnapshot.storage.downloadUrl
+                while (!uriTask.isSuccessful);
+                val urlImagenCargada = uriTask.result.toString()
+                if (uriTask.isSuccessful) {
+                    actualizarImagenBD(urlImagenCargada)
+                }
+
+            }
+            .addOnFailureListener { e ->
+                progressDialog.dismiss()
+                Toast.makeText(applicationContext, "${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+    private fun actualizarImagenBD(urlImagenCargada: kotlin.String) {
+        progressDialog.setMessage("Actualizando imagen")
+        progressDialog.show()
+
+        val hashMap : HashMap<String, Any> = HashMap()
+        if (imageUri != null){
+            hashMap["urlImagenPerfil"] = urlImagenCargada
+        }
+
+        var ref = FirebaseDatabase.getInstance().getReference("Usuarios")
+        ref.child("${firebaseAuth.uid}")
+            .updateChildren(hashMap)
+            .addOnSuccessListener {
+                progressDialog.dismiss()
+                Toast.makeText(applicationContext, "Su imagen de perfil se ha actualizado" , Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                progressDialog.dismiss()
+                Toast.makeText(applicationContext, "${e.message}", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun selec_imagen_de() {
@@ -161,17 +207,19 @@ class EditarPerfil : AppCompatActivity() {
         resultadoCamara_ARL.launch(intent)
 
     }
+
     private val resultadoCamara_ARL =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()){resultado->
             if (resultado.resultCode == Activity.RESULT_OK){
-                try{
+                subirImagenStorage()
+                /* try{
                     Glide.with(this)
                         .load(imageUri)
                         .placeholder(R.drawable.usuario)
                         .into(binding.imgPerfil)
                 }catch (e: Exception){
 
-                }
+                } */
             }else{
                 Toast.makeText(
                     this,
@@ -180,6 +228,7 @@ class EditarPerfil : AppCompatActivity() {
                 ).show()
             }
         }
+
     private val concederPermisoAlmacenamiento =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permisos ->
             val esConcedido = permisos.all { it.value } // Verifica si todos los permisos son "true"
@@ -206,15 +255,16 @@ class EditarPerfil : AppCompatActivity() {
             if (resultado.resultCode == Activity.RESULT_OK){
                 val data = resultado.data
                 imageUri = data!!.data
+                subirImagenStorage()
 
-                try{
+                /* try{
                     Glide.with(this)
                         .load(imageUri)
                         .placeholder(R.drawable.usuario)
                         .into(binding.imgPerfil)
                 }catch (e: Exception){
 
-                }
+                } */
             }else{
                 Toast.makeText(
                     this,
