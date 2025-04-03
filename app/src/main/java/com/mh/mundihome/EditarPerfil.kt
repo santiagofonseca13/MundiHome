@@ -46,9 +46,61 @@ class EditarPerfil : AppCompatActivity() {
 
         cargarInfo()
 
+        binding.BtnActualizar.setOnClickListener {
+            validarInfo()
+        }
+
         binding.FABCambiarImg.setOnClickListener{
             selec_imagen_de()
         }
+    }
+
+    private var nombres = ""
+    private var f_nac = ""
+    private var codigo = ""
+    private var telefono = ""
+    private fun validarInfo() {
+        nombres = binding.EtNombre.text.toString().trim()
+        f_nac = binding.EtFNac.text.toString().trim()
+        codigo = binding.selectorCod.selectedCountryCode.toString()
+        telefono = binding.EtTelefono.text.toString().trim()
+
+        if (nombres.isEmpty()){
+            Toast.makeText(this, "Ingrese sus nombres", Toast.LENGTH_SHORT).show()
+        }else if (f_nac.isEmpty()){
+            Toast.makeText(this, "Ingrese su fecha de nacimiento", Toast.LENGTH_SHORT).show()
+        }else if (codigo.isEmpty()){
+            Toast.makeText(this, "Seleccione un código", Toast.LENGTH_SHORT).show()
+        }else if (telefono.isEmpty()){
+            Toast.makeText(this, "Ingrese un telefono", Toast.LENGTH_SHORT).show()
+        }else{
+            actualizarInfo()
+        }
+    }
+
+    private fun actualizarInfo() {
+        progressDialog.setMessage("Actualizando informacion")
+
+        val hashMap : HashMap<String, Any> = HashMap ()
+
+        hashMap["nombres"] = "${nombres}"
+        hashMap["fecha_nac"] = "${f_nac}"
+        hashMap["codigoTelefono"] = "${codigo}"
+        hashMap["telefono"] = "${telefono}"
+
+        val ref = FirebaseDatabase.getInstance().getReference("Usuarios")
+        ref.child(firebaseAuth.uid!!)
+            .updateChildren(hashMap)
+            .addOnSuccessListener {
+                progressDialog.dismiss()
+                Toast.makeText(this, "Se actualizo su informacion", Toast.LENGTH_SHORT).show()
+
+            }
+            .addOnFailureListener { e->
+                progressDialog.dismiss()
+                Toast.makeText(this, "${e.message}", Toast.LENGTH_SHORT).show()
+            }
+
     }
 
     private fun cargarInfo() {
