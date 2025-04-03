@@ -2,6 +2,8 @@ package com.mh.mundihome
 
 import android.app.ProgressDialog
 import android.os.Bundle
+import android.view.Menu
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -19,7 +21,7 @@ class EditarPerfil : AppCompatActivity() {
 
     private lateinit var binding: ActivityEditarPerfilBinding
     private lateinit var firebaseAuth: FirebaseAuth
-    private lateinit var progressDialog : ProgressDialog
+    private lateinit var progressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,12 +35,16 @@ class EditarPerfil : AppCompatActivity() {
         progressDialog.setCanceledOnTouchOutside(false)
 
         cargarInfo()
+
+        binding.FABCambiarImg.setOnClickListener{
+            selec_imagen_de()
+        }
     }
 
     private fun cargarInfo() {
         val ref = FirebaseDatabase.getInstance().getReference("Usuarios")
         ref.child("${firebaseAuth.uid}")
-            .addValueEventListener(object : ValueEventListener{
+            .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val nombres = "${snapshot.child("nombres").value}"
                     val imagen = "${snapshot.child("urlImagenPerfil").value}"
@@ -56,19 +62,23 @@ class EditarPerfil : AppCompatActivity() {
                             .load(imagen)
                             .placeholder(R.drawable.login)
                             .into(binding.imgPerfil)
-                    }catch (e:Exception){
-                        Toast.makeText(this@EditarPerfil,
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            this@EditarPerfil,
                             "${e.message}",
-                            Toast.LENGTH_SHORT).show()
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                     try {
-                        val codigo = codTelefono.replace("+","").toInt() //+51 - 51
+                        val codigo = codTelefono.replace("+", "").toInt() //+51 - 51
                         binding.selectorCod.setCountryForPhoneCode(codigo)
-                    }catch (e:Exception){
-                        Toast.makeText(this@EditarPerfil,
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            this@EditarPerfil,
                             "${e.message}",
-                            Toast.LENGTH_SHORT).show()
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 }
 
@@ -76,5 +86,27 @@ class EditarPerfil : AppCompatActivity() {
                     TODO("Not yet implemented")
                 }
             })
+
+    }
+
+    private fun selec_imagen_de() {
+        val popupMenu = PopupMenu(this, binding.FABCambiarImg)
+
+        popupMenu.menu.add(Menu.NONE, 1, 1, "Cámara")
+        popupMenu.menu.add(Menu.NONE, 2, 2, "Galería")
+
+        popupMenu.show()
+
+        popupMenu.setOnMenuItemClickListener { item ->
+            val itemId = item.itemId
+            if (itemId == 1) {
+                //Cámara
+            } else if (itemId == 2) {
+                //Galería
+            }
+            return@setOnMenuItemClickListener true
+
+        }
+
     }
 }
