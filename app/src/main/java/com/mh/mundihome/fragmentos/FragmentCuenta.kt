@@ -36,6 +36,12 @@ class fragmentCuenta : Fragment() {
 
         firebaseAuth = FirebaseAuth.getInstance()
 
+
+
+        binding.BtnEditarPerfil.setOnClickListener {
+            startActivity(Intent(mContext, EditarPerfil::class.java))
+        }
+
         binding.BtnCerrarSesiN.setOnClickListener {
             firebaseAuth.signOut()
             startActivity(Intent(mContext, OpcionesLogin::class.java))

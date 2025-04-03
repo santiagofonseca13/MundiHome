@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    tools:context=".EditarPerfil">
+    
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        
+        <TextView
+            android:id="@+id/Txt_editar_perfil"
+            android:text="@string/Txt_editar_perfil"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Imagen de perfil -->
+        <RelativeLayout
+            android:id="@+id/PerfilRL"
+            android:layout_centerHorizontal="true"
+            android:layout_width="120dp"
+            android:layout_height="120dp">
+
+            <ImageView
+                android:id="@+id/img_perfil"
+                android:src="@drawable/usuario"
+                android:scaleType="centerCrop"
+                android:layout_width="120dp"
+                android:layout_height="120dp"/>
+            
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/FABCambiarImg"
+                android:layout_alignParentEnd="true"
+                app:fabSize="mini"
+                android:src="@drawable/ic_select_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/PerfilRL"
+            android:layout_marginTop="10dp"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Nombres -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/TILNombres"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/PerfilRL"
+            android:layout_marginTop="10dp"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp">
+
+            <EditText
+                android:id="@+id/Et_nombre"
+                android:hint="@string/Et_nombre"
+                android:inputType="textPersonName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Fecha de Nacimiento -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/TIL_Nac"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/TILNombres"
+            android:layout_marginTop="10dp"
+            app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusTopEnd="8dp"
+            app:boxCornerRadiusBottomStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp">
+
+            <EditText
+                android:id="@+id/Et_f_nac"
+                android:hint="@string/Et_f_nac"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Cod + Telefono -->
+        <RelativeLayout
+            android:id="@+id/RL_cod_Tel"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/TIL_Nac"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            
+            <com.hbb20.CountryCodePicker
+                android:id="@+id/selectorCod"
+                android:gravity="center"
+                app:ccp_autoDetectCountry="true"
+                app:ccp_rememberLastSelection="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!-- Numero Telefonico -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/selectorCod"
+                android:layout_marginTop="10dp"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp">
+
+                <EditText
+                    android:id="@+id/Et_telefono"
+                    android:hint="@string/Et_telefono"
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </RelativeLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/Btn_actualizar"
+            android:text="@string/Btn_actualizar"
+            android:textAllCaps="true"
+            android:layout_centerInParent="true"
+            android:layout_below="@+id/RL_cod_Tel"
+            android:layout_marginTop="15dp"
+            app:icon="@drawable/ic_edit"
+            android:layout_width="200dp"
+            android:layout_height="@dimen/m_button_height"/>
+        
+    </RelativeLayout>
+
+</RelativeLayout>

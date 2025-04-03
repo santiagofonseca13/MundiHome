@@ -15,6 +15,9 @@
         android:theme="@style/Theme.Mundihome"
         tools:targetApi="31">
         <activity
+            android:name=".EditarPerfil"
+            android:exported="false" />
+        <activity
             android:name=".Registro_email"
             android:exported="false" />
         <activity

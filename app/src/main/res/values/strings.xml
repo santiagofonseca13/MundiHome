@@ -42,6 +42,14 @@
     <string name="Btn_editar_perfil">Editar perfil</string>
     <string name="Btn_cerrar_sesión">Cerrar sesión</string>
 
+    <!-- Editar Perfil -->
+    <string name="Txt_editar_perfil">Editar Perfil</string>
+    <string name="Et_nombre">Nombres</string>
+    <string name="Et_f_nac">Fecha de Nacimiento</string>
+    <string name="Cod_tel">00</string>
+    <string name="Et_telefono">Telefono</string>
+    <string name="Btn_actualizar">Actualizar</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_registro_email">Registro_email</string>

@@ -56,6 +56,7 @@ dependencies {
     implementation(libs.navigation.ui.ktx)
     implementation(libs.firebase.auth.ktx)
     testImplementation(libs.junit)
+    implementation ("com.hbb20:ccp:2.7.0")
     implementation(platform("com.google.firebase:firebase-bom:33.11.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-database")
