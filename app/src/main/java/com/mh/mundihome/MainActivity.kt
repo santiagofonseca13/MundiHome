@@ -8,6 +8,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ReportFragment.Companion.reportFragment
 import com.google.firebase.auth.FirebaseAuth
+import com.mh.mundihome.Anuncios.CrearAnuncio
 import com.mh.mundihome.databinding.ActivityMainBinding
 import com.mh.mundihome.fragmentos.fragmentCuenta
 import com.mh.mundihome.fragmentos.fragmentInicio
@@ -56,6 +57,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
+        binding.FAB.setOnClickListener {
+            startActivity(Intent(this, CrearAnuncio::class.java))
+        }
+
     }
 
     private fun comprobarSesion(){
