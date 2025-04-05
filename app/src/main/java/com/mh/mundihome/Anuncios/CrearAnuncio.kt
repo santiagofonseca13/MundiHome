@@ -15,6 +15,8 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import com.mh.mundihome.Adaptadores.AdaptadorImagenSeleccionada
 import com.mh.mundihome.Constantes
 import com.mh.mundihome.R
@@ -74,6 +76,10 @@ class CrearAnuncio : AppCompatActivity() {
         binding.agregarImg.setOnClickListener{
             mostrarOpciones()
         }
+
+        binding.BtnCrearAnuncio.setOnClickListener {
+            validarDatos()
+        }
     }
     private var tituloAnuncio = ""
     private var tipoInmueble = ""
@@ -95,6 +101,7 @@ class CrearAnuncio : AppCompatActivity() {
     private var construccion =""
     private var servicios =""
     private var estadoLegal =""
+
     private var latitud = 0.0
     private var longitud = 0.0
     private fun validarDatos(){
@@ -119,6 +126,176 @@ class CrearAnuncio : AppCompatActivity() {
         servicios = binding.Servicios.text.toString().trim()
         estadoLegal = binding.EstadoLegal.text.toString().trim()
 
+        if (tituloAnuncio.isEmpty()){
+            binding.EtAnuncio.error = "Ingrese un titulo para el anuncio"
+            binding.EtAnuncio.requestFocus()
+        }
+        else if (tipoInmueble.isEmpty()){
+            binding.TipoInmueble.error = "Seleccione el tipo de inmueble"
+            binding.TipoInmueble.requestFocus()
+        }
+        else if (ciudad.isEmpty()) {
+            binding.Ciudad.error = "Seleccione la ciudad"
+            binding.Ciudad.requestFocus()
+        }
+        else if (estado.isEmpty()) {
+            binding.Estado.error = "Seleccione el estado"
+            binding.Estado.requestFocus()
+        }
+        else if (estracto.isEmpty()) {
+            binding.Estrato.error = "Seleccione el estrato"
+            binding.Estrato.requestFocus()
+        }
+        else if (areaConstruida.isEmpty()) {
+            binding.AreaConstruida.error = "Ingrese el área construida"
+            binding.AreaConstruida.requestFocus()
+        }
+        else if (areaTotal.isEmpty()) {
+            binding.AreaTotal.error = "Ingrese el área total"
+            binding.AreaTotal.requestFocus()
+        }
+        else if (precio.isEmpty()) {
+            binding.EtPrecio.error = "Ingrese un precio"
+            binding.EtPrecio.requestFocus()
+        }
+        else if (descripcion.isEmpty()) {
+            binding.EtDescripcion.error = "Ingrese la descripción"
+            binding.EtDescripcion.requestFocus()
+        }
+        else if (ubicacion.isEmpty()) {
+            binding.Ubicacion.error = "Ingrese la ubicación"
+            binding.Ubicacion.requestFocus()
+        }
+        else if (coordenadas.isEmpty()) {
+            binding.Ubicacion.error = "Ingrese las coordenadas"
+            binding.Ubicacion.requestFocus()
+        }
+        else if (dormitorios.isEmpty()) {
+            binding.Dormitorios.error = "Seleccione la cantidad de dormitorios"
+            binding.Dormitorios.requestFocus()
+        }
+        else if (banos.isEmpty()) {
+            binding.BaOs.error = "Seleccione la cantidad de baños"
+            binding.BaOs.requestFocus()
+        }
+        else if (estacionamiento.isEmpty()) {
+            binding.Estacionamiento.error = "Seleccione una opción"
+            binding.Estacionamiento.requestFocus()
+        }
+        else if (piso.isEmpty()) {
+            binding.Piso.error = "Ingrese la cantidad de pisos"
+            binding.Piso.requestFocus()
+        }
+        else if (mascotas.isEmpty()) {
+            binding.AceptaMascotas.error = "Selecione una opción"
+            binding.AceptaMascotas.requestFocus()
+        }
+        else if (administracion.isEmpty()) {
+            binding.IncluyeAdministracion.error = "Seleccione una opción"
+            binding.IncluyeAdministracion.requestFocus()
+        }
+        else if (construccion.isEmpty()) {
+            binding.AreaConstruida.error = "Ingrese el área construida"
+            binding.AreaConstruida.requestFocus()
+        }
+        else if (servicios.isEmpty()) {
+            binding.Servicios.error = "Ingrese los servicios"
+            binding.Servicios.requestFocus()
+        }
+        else if (estadoLegal.isEmpty()) {
+            binding.EstadoLegal.error = "Seleccione una opción"
+            binding.EstadoLegal.requestFocus()
+        }
+        else if (imagenUri == null){
+            Toast.makeText(this,"Agregue al menos una imagen", Toast.LENGTH_SHORT).show()
+        }else{
+            agregarAnuncio()
+        }
+
+    }
+
+    private fun agregarAnuncio() {
+        progressDialog.setMessage("Agregando anuncio")
+        progressDialog.show()
+
+        val tiempo = Constantes.obtenetTiempoDis()
+
+        val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
+        val keyId = ref.push().key
+
+        val hashMap = HashMap<String, Any>()
+        hashMap["id"] = "${keyId}"
+        hashMap["uid"] = "${firebaseAuth.uid}"
+        hashMap["tituloAnuncio"] = "${tituloAnuncio}"
+        hashMap["tipoInmueble"] = "${tipoInmueble}"
+        hashMap["ciudad"] = "${ciudad}"
+        hashMap["estado"] = "${Constantes.anuncio_disponible}"
+        hashMap["estrato"] = "${estracto}"
+        hashMap["areaContruida"] = "${areaConstruida}"
+        hashMap["areaTotal"] = "${areaTotal}"
+        hashMap["precio"] = "${precio}"
+        hashMap["descripción"] = "${descripcion}"
+        hashMap["ubicación"] = "${ubicacion}"
+        hashMap["coordenadas"] = "${coordenadas}"
+        hashMap["dormitorios"] = "${dormitorios}"
+        hashMap["baños"] = "${banos}"
+        hashMap["estacionamiento"] = "${estacionamiento}"
+        hashMap["piso"] = "${piso}"
+        hashMap["mascotas"] = "${mascotas}"
+        hashMap["administración"] = "${administracion}"
+        hashMap["construcción"] = "${construccion}"
+        hashMap["servicios"] = "${servicios}"
+        hashMap["estadoLegal"] = "${estadoLegal}"
+        hashMap["tiempo"] = tiempo
+        hashMap["latitud"] = latitud
+        hashMap["longitud"] = longitud
+
+        ref.child(keyId!!)
+            .setValue(hashMap)
+            .addOnSuccessListener {
+                cargarImagenesStorage(keyId)
+            }
+            .addOnFailureListener {e->
+                Toast.makeText(
+                    this, "${e.message}", Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
+
+    private fun cargarImagenesStorage(keyId : String) {
+        for (i in imagenesArrayList.indices){
+            val modeloImagenSeleccionada = imagenesArrayList[i]
+            val nombreImagen = modeloImagenSeleccionada.id
+            val rutaNombreImagen = "Anuncios/$nombreImagen"
+
+            val storageReference = FirebaseStorage.getInstance().getReference(rutaNombreImagen)
+            storageReference.putFile(modeloImagenSeleccionada.imagenUri!!)
+                .addOnSuccessListener { taskSnaphot ->
+                    val uriTask = taskSnaphot.storage.downloadUrl
+                    while (!uriTask.isSuccessful);
+                    val urlImgCargada = uriTask.result
+
+                    if (uriTask.isSuccessful){
+                        val hashMap = HashMap<String, Any>()
+                        hashMap["id"] = "${modeloImagenSeleccionada.imagenUri}"
+                        hashMap["imagenUrl"] = "$urlImgCargada"
+
+                        val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
+                        ref.child(keyId).child("Imagenes")
+                            .child(nombreImagen)
+                            .updateChildren(hashMap)
+                    }
+                    progressDialog.dismiss()
+                    onBackPressedDispatcher.onBackPressed()
+                    Toast.makeText(this,
+                        "Se publicó satisfactoriamente su anuncio",
+                        Toast.LENGTH_SHORT).show()
+                }
+                .addOnFailureListener { e->
+                    Toast.makeText(
+                        this, "$e,message", Toast.LENGTH_SHORT)
+                }
+        }
     }
 
     private fun mostrarOpciones() {
@@ -181,6 +358,7 @@ class CrearAnuncio : AppCompatActivity() {
                 val modeloImgSel = ModeloImagenSeleccionada(
                     tiempo, imagenUri, null, false
                 )
+                imagenesArrayList.add(modeloImgSel)
                 cargarImagenes()
 
             }else{
@@ -230,6 +408,7 @@ class CrearAnuncio : AppCompatActivity() {
                 val modeloImgSel = ModeloImagenSeleccionada(
                     tiempo, imagenUri, null, false
                 )
+                imagenesArrayList.add(modeloImgSel)
                 cargarImagenes()
             }else{
                 Toast.makeText(
