@@ -87,6 +87,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/Til_Ciudad"
                 android:layout_below="@+id/Til_Tipo_Inmueble"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_marginTop="10dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusBottomEnd="8dp"
@@ -95,10 +96,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/Ciudad"
                     android:hint="@string/Ciudad"
-                    android:inputType="textPersonName|textCapSentences"
+                    android:inputType="none"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
@@ -129,6 +130,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/Til_Estracto"
                 android:layout_below="@+id/Til_Estado"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_marginTop="10dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusBottomEnd="8dp"
@@ -137,10 +139,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
+                <AutoCompleteTextView
                     android:id="@+id/Estrato"
                     android:hint="@string/Estrato"
-                    android:inputType="number"
+                    android:inputType="none"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
