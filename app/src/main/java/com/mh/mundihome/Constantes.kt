@@ -85,6 +85,10 @@ object Constantes {
         "No"
     )
 
+    val ubicacion = arrayOf(
+        "N/A"
+    )
+
     fun obtenerFecha(tiempo : Long) : String{
         val calendario = Calendar.getInstance(Locale.ENGLISH)
         calendario.timeInMillis = tiempo

@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">MundiHome</string>
-    
+
     <string name="mi_google_api_key">AIzaSyD10DKZ_zOLTYB7cDM_vgYdsA9RftE-aQ8</string>
 
     <string name="Item_Inicio">Inicio</string>
@@ -61,7 +61,7 @@
     <string name="Area_Construida">Area_Construida: m2</string>
     <string name="Area_Total">Area_Total: m2</string>
     <string name="Et_descripcion">Descripcion</string>
-    <string name="Ubicacion">Ubicacion</string>
+    <string name="Localizacion">Localizacion</string>
     <string name="Dormitorios">No Dormitorios</string>
     <string name="Baños">No Baños</string>
     <string name="Estacionamiento">Estacionamiento Si/No</string>
@@ -73,6 +73,10 @@
     <string name="Servicios">Servicios: Ascensores/Areas Comunes/etc</string>
     <string name="EstadoLegal">EstadoLegal: Escritura/Matricula/etc</string>
     <string name="Btn_crear_anuncio">Crear Anuncio</string>
+    
+    <!-- Mapas -->
+    <string name="Txt_selec_ubicacion">Seleccione ubicacion</string>
+    <string name="Btn_listo">Listo</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->

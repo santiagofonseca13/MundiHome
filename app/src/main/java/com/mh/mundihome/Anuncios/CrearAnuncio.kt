@@ -14,12 +14,14 @@ import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.play.integrity.internal.u
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.mh.mundihome.Adaptadores.AdaptadorImagenSeleccionada
 import com.mh.mundihome.Constantes
 import com.mh.mundihome.R
+import com.mh.mundihome.SeleccionarUbicacion
 import com.mh.mundihome.databinding.ActivityCrearAnuncioBinding
 import com.mh.mundihome.modelo.ModeloImagenSeleccionada
 
@@ -77,6 +79,11 @@ class CrearAnuncio : AppCompatActivity() {
             mostrarOpciones()
         }
 
+        binding.Localizacion.setOnClickListener {
+            var intent = Intent(this, SeleccionarUbicacion::class.java)
+            seleccionarUbicacion_ARL.launch(intent)
+        }
+
         binding.BtnCrearAnuncio.setOnClickListener {
             validarDatos()
         }
@@ -90,8 +97,8 @@ class CrearAnuncio : AppCompatActivity() {
     private var areaTotal =""
     private var precio =""
     private var descripcion =""
+    private var direccion =""
     private var ubicacion =""
-    private var coordenadas =""
     private var dormitorios =""
     private var banos = ""
     private var estacionamiento = ""
@@ -101,7 +108,6 @@ class CrearAnuncio : AppCompatActivity() {
     private var construccion =""
     private var servicios =""
     private var estadoLegal =""
-
     private var latitud = 0.0
     private var longitud = 0.0
     private fun validarDatos(){
@@ -114,8 +120,7 @@ class CrearAnuncio : AppCompatActivity() {
         areaTotal = binding.AreaTotal.text.toString().trim()
         precio = binding.EtPrecio.text.toString().trim()
         descripcion = binding.EtDescripcion.text.toString().trim()
-        ubicacion = binding.Ubicacion.text.toString().trim()
-        coordenadas = binding.Ubicacion.text.toString().trim()
+        direccion = binding.Localizacion.text.toString().trim()
         dormitorios = binding.Dormitorios.text.toString().trim()
         banos = binding.BaOs.text.toString().trim()
         estacionamiento = binding.Estacionamiento.text.toString().trim()
@@ -162,10 +167,6 @@ class CrearAnuncio : AppCompatActivity() {
             binding.EtDescripcion.error = "Ingrese la descripción"
             binding.EtDescripcion.requestFocus()
         }
-        else if (ubicacion.isEmpty()) {
-            binding.Ubicacion.error = "Ingrese la ubicación"
-            binding.Ubicacion.requestFocus()
-        }
         else if (dormitorios.isEmpty()) {
             binding.Dormitorios.error = "Seleccione la cantidad de dormitorios"
             binding.Dormitorios.requestFocus()
@@ -207,8 +208,23 @@ class CrearAnuncio : AppCompatActivity() {
         }else{
             agregarAnuncio()
         }
-
     }
+
+    private val seleccionarUbicacion_ARL =
+        registerForActivityResult (ActivityResultContracts.StartActivityForResult()){resultado->
+            if (resultado.resultCode == Activity.RESULT_OK){
+                val data = resultado.data
+                if (data != null){
+                    latitud = data.getDoubleExtra("latitud", 0.0)
+                    longitud = data.getDoubleExtra("longitud", 0.0)
+                    direccion = data.getStringExtra("direccion") ?: ""
+
+                    binding.Localizacion.setText(direccion)
+                }else{
+                    Toast.makeText(this, "Cancelado", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
 
     private fun agregarAnuncio() {
         progressDialog.setMessage("Agregando anuncio")
@@ -225,6 +241,7 @@ class CrearAnuncio : AppCompatActivity() {
         hashMap["tituloAnuncio"] = "${tituloAnuncio}"
         hashMap["tipoInmueble"] = "${tipoInmueble}"
         hashMap["ciudad"] = "${ciudad}"
+        hashMap["direccion"] = "${direccion}"
         hashMap["estado"] = "${Constantes.anuncio_disponible}"
         hashMap["estrato"] = "${estracto}"
         hashMap["areaContruida"] = "${areaConstruida}"

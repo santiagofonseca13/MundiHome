@@ -234,10 +234,11 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Ubicacion -->
+            <!-- Localizacion -->
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/Til_Ubicacion"
+                android:id="@+id/Til_Localizacion"
                 android:layout_below="@+id/Til_Descripcion"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_marginTop="10dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusBottomEnd="8dp"
@@ -246,10 +247,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <EditText
-                    android:id="@+id/Ubicacion"
-                    android:hint="@string/Ubicacion"
-                    android:inputType="textPersonName|textCapSentences"
+                <AutoCompleteTextView
+                    android:id="@+id/Localizacion"
+                    android:hint="@string/Localizacion"
+                    android:inputType="none"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
@@ -258,7 +259,7 @@
             <!-- Dormitorios -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/Til_Dormitorios"
-                android:layout_below="@+id/Til_Ubicacion"
+                android:layout_below="@+id/Til_Localizacion"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_marginTop="10dp"
                 app:boxCornerRadiusBottomStart="8dp"
