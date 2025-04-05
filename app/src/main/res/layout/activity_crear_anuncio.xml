@@ -15,11 +15,11 @@
 
         <ImageView
             android:id="@+id/agregarImg"
-            android:layout_marginTop="15dp"
-            android:layout_centerInParent="true"
-            android:src="@drawable/agregar_img"
             android:layout_width="100dp"
-            android:layout_height="100dp"/>
+            android:layout_height="100dp"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="15dp"
+            android:src="@drawable/agregar_img" />
     </RelativeLayout>
 
     <androidx.core.widget.NestedScrollView
@@ -193,7 +193,7 @@
             <!-- Et_precio -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/Til_Et_precio"
-                android:layout_below="@+id/Til_Incluye_Administracion"
+                android:layout_below="@+id/Til_Ubicacion"
                 android:layout_marginTop="10dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusBottomEnd="8dp"
@@ -214,7 +214,7 @@
             <!-- Descripcion -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/Til_Descripcion"
-                android:layout_below="@+id/Til_Area_Total"
+                android:layout_below="@+id/TIL_anuncio"
                 android:layout_marginTop="10dp"
                 app:boxCornerRadiusBottomStart="8dp"
                 app:boxCornerRadiusBottomEnd="8dp"
