@@ -6,11 +6,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardElevation="0dp"
     app:cardUseCompatPadding="true">
-    
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        
+
         <ImageView
             android:id="@+id/item_imagen"
             android:src="@drawable/item_imagen"
@@ -20,12 +20,12 @@
 
         <ImageView
             android:id="@+id/cerrar_item"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentEnd="true"
             android:padding="10dp"
-            android:src="@drawable/cerrar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-        
+            android:src="@drawable/cerrar" />
+
     </RelativeLayout>
 
 </com.google.android.material.card.MaterialCardView>
