@@ -166,10 +166,6 @@ class CrearAnuncio : AppCompatActivity() {
             binding.Ubicacion.error = "Ingrese la ubicación"
             binding.Ubicacion.requestFocus()
         }
-        else if (coordenadas.isEmpty()) {
-            binding.Ubicacion.error = "Ingrese las coordenadas"
-            binding.Ubicacion.requestFocus()
-        }
         else if (dormitorios.isEmpty()) {
             binding.Dormitorios.error = "Seleccione la cantidad de dormitorios"
             binding.Dormitorios.requestFocus()
@@ -236,7 +232,6 @@ class CrearAnuncio : AppCompatActivity() {
         hashMap["precio"] = "${precio}"
         hashMap["descripción"] = "${descripcion}"
         hashMap["ubicación"] = "${ubicacion}"
-        hashMap["coordenadas"] = "${coordenadas}"
         hashMap["dormitorios"] = "${dormitorios}"
         hashMap["baños"] = "${banos}"
         hashMap["estacionamiento"] = "${estacionamiento}"

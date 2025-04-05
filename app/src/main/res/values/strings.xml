@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">MundiHome</string>
+    
+    <string name="mi_google_api_key">AIzaSyD10DKZ_zOLTYB7cDM_vgYdsA9RftE-aQ8</string>
 
     <string name="Item_Inicio">Inicio</string>
     <string name="Item_Chats">Chats</string>
@@ -60,7 +62,6 @@
     <string name="Area_Total">Area_Total: m2</string>
     <string name="Et_descripcion">Descripcion</string>
     <string name="Ubicacion">Ubicacion</string>
-    <string name="Coordenadas">Coordenadas</string>
     <string name="Dormitorios">No Dormitorios</string>
     <string name="Baños">No Baños</string>
     <string name="Estacionamiento">Estacionamiento Si/No</string>
