@@ -298,16 +298,40 @@ class CrearAnuncio : AppCompatActivity() {
                             .updateChildren(hashMap)
                     }
                     progressDialog.dismiss()
-                    onBackPressedDispatcher.onBackPressed()
                     Toast.makeText(this,
                         "Se publicó satisfactoriamente su anuncio",
                         Toast.LENGTH_SHORT).show()
+                    limpiarCampos()
                 }
                 .addOnFailureListener { e->
                     Toast.makeText(
                         this, "$e,message", Toast.LENGTH_SHORT)
                 }
         }
+    }
+
+    private fun limpiarCampos(){
+        imagenesArrayList.clear()
+        adaptadorImagenSeleccionada.notifyDataSetChanged()
+        binding.EtAnuncio.setText("")
+        binding.TipoInmueble.setText("")
+        binding.Ciudad.setText("")
+        binding.Estado.setText("")
+        binding.Estrato.setText("")
+        binding.AreaConstruida.setText("")
+        binding.AreaTotal.setText("")
+        binding.EtPrecio.setText("")
+        binding.EtDescripcion.setText("")
+        binding.Localizacion.setText("")
+        binding.Dormitorios.setText("")
+        binding.BaOs.setText("")
+        binding.Estacionamiento.setText("")
+        binding.Piso.setText("")
+        binding.AceptaMascotas.setText("")
+        binding.IncluyeAdministracion.setText("")
+        binding.DetallesContruccion.setText("")
+        binding.Servicios.setText("")
+        binding.EstadoLegal.setText("")
     }
 
     private fun mostrarOpciones() {
