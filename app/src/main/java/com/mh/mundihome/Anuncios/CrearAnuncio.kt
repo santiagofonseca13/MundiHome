@@ -167,6 +167,10 @@ class CrearAnuncio : AppCompatActivity() {
             binding.EtDescripcion.error = "Ingrese la descripción"
             binding.EtDescripcion.requestFocus()
         }
+        else if (direccion.isEmpty()){
+            binding.Localizacion.error = "Ingrese una localizacion"
+            binding.Localizacion.requestFocus()
+        }
         else if (dormitorios.isEmpty()) {
             binding.Dormitorios.error = "Seleccione la cantidad de dormitorios"
             binding.Dormitorios.requestFocus()
