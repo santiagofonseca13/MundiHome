@@ -1,60 +1,88 @@
 package com.mh.mundihome.fragmentos
 
+import android.app.Activity
+import android.app.ProgressDialog
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.mh.mundihome.Constantes
 import com.mh.mundihome.R
+import com.mh.mundihome.SeleccionarUbicacion
+import com.mh.mundihome.databinding.ActivityCrearAnuncioBinding
+import com.mh.mundihome.databinding.FragmentInicioBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [fragmentInicio.newInstance] factory method to
- * create an instance of this fragment.
- */
 class fragmentInicio : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private lateinit var binding: FragmentInicioBinding
+    private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var progressDialog: ProgressDialog
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    private var direccion =""
+    private var latitud = 0.0
+    private var longitud = 0.0
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        firebaseAuth = FirebaseAuth.getInstance()
+        progressDialog = ProgressDialog(requireContext())
+        progressDialog.setTitle("Espere por favor")
+        progressDialog.setCanceledOnTouchOutside(false)
+
+        binding.ubicacion.setOnClickListener {
+            val intent = Intent(requireContext(), SeleccionarUbicacion::class.java) // Usa requireContext()
+            seleccionarUbicacion_ARL.launch(intent)
         }
     }
+
+    private val seleccionarUbicacion_ARL =
+        registerForActivityResult (ActivityResultContracts.StartActivityForResult()){resultado->
+            if (resultado.resultCode == Activity.RESULT_OK){
+                val data = resultado.data
+                if (data != null){
+                    latitud = data.getDoubleExtra("latitud", 0.0)
+                    longitud = data.getDoubleExtra("longitud", 0.0)
+                    direccion = data.getStringExtra("direccion") ?: ""
+                    binding.ubicacion.setText(direccion)
+                }else{
+                    Toast.makeText(requireContext(), "Cancelado", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+    private fun buscarAnuncios(){
+        progressDialog.setMessage("Agregando anuncio")
+        progressDialog.show()
+
+        val tiempo = Constantes.obtenetTiempoDis()
+
+        val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
+        val keyId = ref.push().key
+
+        val hashMap = HashMap<String, Any>()
+        hashMap["id"] = "${keyId}"
+        hashMap["uid"] = "${firebaseAuth.uid}"
+        hashMap["latitud"] = latitud
+        hashMap["longitud"] = longitud
+    }
+
+    private fun limpiarCampos(){
+        binding.ubicacion.text.clear()
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_inicio, container, false)
+        binding = FragmentInicioBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment fragmentInicio.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            fragmentInicio().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 }
