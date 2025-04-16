@@ -1,50 +1,42 @@
 {
   "project_info": {
-    "project_number": "969381679953",
-    "firebase_url": "https://mundihome-bf35f-default-rtdb.firebaseio.com",
-    "project_id": "mundihome-bf35f",
-    "storage_bucket": "mundihome-bf35f.firebasestorage.app"
+    "project_number": "73720423437",
+    "firebase_url": "https://app-compra-y-venta-4532b-default-rtdb.firebaseio.com",
+    "project_id": "app-compra-y-venta-4532b",
+    "storage_bucket": "app-compra-y-venta-4532b.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:969381679953:android:1903ff7d5b43419beab970",
+        "mobilesdk_app_id": "1:73720423437:android:51e13ddb58584c33ba6144",
         "android_client_info": {
-          "package_name": "com.mh.mundihome"
+          "package_name": "com.redsystemstudio.appcomprayventa"
         }
       },
       "oauth_client": [
         {
-          "client_id": "969381679953-djhlalma558p0ckbms3slfkovvoscgif.apps.googleusercontent.com",
+          "client_id": "73720423437-8buf9cafn2bg3b9bjhapm4kibqlcerqo.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.mh.mundihome",
-            "certificate_hash": "6dace4c41a2419806ff70a867f129e5fcbbd8ff7"
+            "package_name": "com.redsystemstudio.appcomprayventa",
+            "certificate_hash": "75fe4fd3342fe2b09b011d9e059551489c4db3a5"
           }
         },
         {
-          "client_id": "969381679953-j2qr348lnnts5umj44sc9req064d79lu.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.mh.mundihome",
-            "certificate_hash": "cf6522b6eff55cf05825e91caebdff2bca0694c8"
-          }
-        },
-        {
-          "client_id": "969381679953-k2nr0npi90v27bfqptakgle8j3j6pe8t.apps.googleusercontent.com",
+          "client_id": "73720423437-rtp0s6ue6kpl890t1gi9888pr24kbgp9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB4Y0uBCQGLUggIgr_kpeAeBN2OgmWliv8"
+          "current_key": "AIzaSyDKP_WIOIOwPZmS54-0zGO3H8jMwKA9ACE"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "969381679953-k2nr0npi90v27bfqptakgle8j3j6pe8t.apps.googleusercontent.com",
+              "client_id": "73720423437-rtp0s6ue6kpl890t1gi9888pr24kbgp9.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

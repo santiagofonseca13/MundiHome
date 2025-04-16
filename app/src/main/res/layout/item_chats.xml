@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:cardCornerRadius="5dp"
+    app:cardUseCompatPadding="true"
+    app:contentPadding="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!--Imagen de perfil-->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/Iv_perfil"
+            tools:src="@tools:sample/avatars"
+            android:layout_marginEnd="10dp"
+            android:scaleType="centerCrop"
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
+
+        <!--Nombres-->
+        <TextView
+            android:id="@+id/Tv_nombres"
+            android:layout_toEndOf="@id/Iv_perfil"
+            android:textStyle="bold"
+            tools:text="@tools:sample/full_names"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!--El último mensaje-->
+        <TextView
+            android:id="@+id/Tv_ultimo_mensaje"
+            android:maxLines="1"
+            android:layout_marginTop="5dp"
+            android:ellipsize="end"
+            android:layout_toEndOf="@id/Iv_perfil"
+            android:layout_below="@id/Tv_nombres"
+            tools:text="@tools:sample/lorem[10]"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!--La fecha-->
+        <TextView
+            android:id="@+id/Tv_fecha"
+            android:text="@string/Tv_fecha"
+            android:layout_alignParentEnd="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -3,18 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SeleccionarUbicacion">
 
     <RelativeLayout
-        android:layout_marginTop="10dp"
-        android:id ="@id/ToolbarRl"
+        android:id="@+id/ToolbarRl"
         android:layout_width="match_parent"
         android:layout_height="@dimen/m_toolbar_height">
 
-        <!-- Botton Regresar -->
+        <!--Regresar-->
         <ImageButton
             android:id="@+id/Ib_regresar"
             android:src="@drawable/ic_regresar"
@@ -30,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <!-- Buscar Ubicacion -->
+        <!--Buscar ubicación-->
         <ImageButton
             android:id="@+id/Ib_gsp"
             android:src="@drawable/ic_gps"
@@ -40,11 +38,13 @@
             android:padding="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-        
+
         <View
             android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:background="#ccc"/>
+            android:layout_height="1dp"
+            android:background="#ccc"
+            android:layout_alignParentBottom="true"/>
+
 
     </RelativeLayout>
 
@@ -55,7 +55,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <!--Buscar una ubicacion-->
+    <!--Buscar una ubicación-->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -64,19 +64,20 @@
         app:cardUseCompatPadding="true">
 
         <fragment
-            android:id="@+id/autocomplete_fragment"
+            android:id="@+id/autocompletar_fragment"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
+            android:layout_height="wrap_content"/>
+
 
     </com.google.android.material.card.MaterialCardView>
 
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/ListoLl"
+        android:id="@+id/listoLl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_margin="20dp"
+        android:layout_margin="10dp"
         android:layout_alignParentBottom="true">
 
         <com.google.android.material.card.MaterialCardView
@@ -91,6 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
+
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.button.MaterialButton
@@ -99,8 +101,8 @@
             android:textAllCaps="true"
             app:cornerRadius="8dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"/>
+            android:layout_height="wrap_content"/>
+
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--Las imagen(es) del anuncio-->
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/ImagenIv"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:src="@drawable/item_imagen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!--Mostrar cuaál es la imagen actual-->
+    <TextView
+        android:id="@+id/imagenContadorTv"
+        android:text="@string/imagenContadorTv"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</RelativeLayout>

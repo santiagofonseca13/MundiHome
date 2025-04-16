@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DetalleVendedor.DetalleVendedor">
+
+    <RelativeLayout
+        android:id="@+id/ToolbarRl"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/m_toolbar_height">
+
+        <ImageButton
+            android:id="@+id/Ib_regresar"
+            android:src="@drawable/ic_regresar"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:text="@string/Txt_perfil_vendedor"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ccc"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/perfilMCV"
+        android:layout_below="@+id/ToolbarRl"
+        android:padding="10dp"
+        app:contentPadding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/Iv_vendedor"
+                android:src="@drawable/img_perfil"
+                android:layout_marginEnd="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"/>
+
+            <TextView
+                android:id="@+id/Tv_nombres"
+                android:text="@string/Tv_nombres"
+                android:layout_toEndOf="@id/Iv_vendedor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/Txt_miembro"
+                android:text="@string/Txt_miembro"
+                android:layout_toEndOf="@id/Iv_vendedor"
+                android:layout_below="@id/Tv_nombres"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/Tv_miembro"
+                android:text="@string/Tv_miembro"
+                android:layout_toEndOf="@id/Txt_miembro"
+                android:layout_marginStart="10dp"
+                android:layout_below="@id/Tv_nombres"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <ImageView
+                android:id="@+id/Iv_comentarios"
+                android:layout_alignParentEnd="true"
+                android:padding="10dp"
+                android:src="@drawable/comentarios"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </RelativeLayout>
+
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <View
+        android:id="@+id/View02"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#ccc"
+        android:layout_below="@id/perfilMCV"/>
+
+    <TextView
+        android:id="@+id/Txt_anuncios"
+        android:text="@string/Txt_anuncios"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_below="@id/View02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:id="@+id/Tv_num_anuncios"
+        android:text="@string/Tv_num_anuncios"
+        android:layout_toEndOf="@id/Txt_anuncios"
+        android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_below="@id/View02"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/anunciosRv"
+        android:layout_below="@id/Tv_num_anuncios"
+        android:layout_marginTop="5dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_anuncio"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</RelativeLayout>

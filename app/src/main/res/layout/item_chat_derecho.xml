@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginStart="100dp"
+    app:cardUseCompatPadding="true"
+    android:padding="15dp"
+    app:cardCornerRadius="10dp">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:orientation="vertical">
+
+        <!--Mensaje de texto-->
+        <TextView
+            android:id="@+id/Tv_mensaje"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            tools:text="@tools:sample/lorem[15]"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!--Mensaje imagen-->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/Iv_mensaje"
+            android:layout_marginTop="5dp"
+            android:src="@drawable/icono_mensaje_imagen"
+            app:shapeAppearanceOverlay="@style/ImageStyle_Corners_Reounded"
+            android:background="#ccc"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:layout_width="200dp"
+            android:layout_height="200dp"/>
+
+        <!--Fecha y hora-->
+        <TextView
+            android:id="@+id/Tv_tiempo_mensaje"
+            android:text="@string/Tv_tiempo_mensaje"
+            android:textStyle="italic"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+</com.google.android.material.card.MaterialCardView>

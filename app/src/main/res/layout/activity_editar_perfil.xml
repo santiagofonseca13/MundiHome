@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="10dp"
@@ -14,8 +13,8 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/Txt_editar_perfil"
-            android:text="@string/Txt_editar_perfil"
+            android:id="@+id/Txt_editar_p"
+            android:text="@string/Txt_editar_p"
             android:gravity="center"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -23,16 +22,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <!-- Imagen de perfil -->
+        <!--Imagen de perfil-->
         <RelativeLayout
-            android:id="@+id/PerfilRL"
+            android:id="@+id/perfilRL"
+            android:layout_below="@+id/Txt_editar_p"
+            android:layout_marginTop="15dp"
             android:layout_centerHorizontal="true"
-            android:layout_width="150dp"
-            android:layout_height="150dp">
+            android:layout_width="135dp"
+            android:layout_height="135dp">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/img_perfil"
-                android:src="@drawable/usuario"
+                android:src="@drawable/img_perfil"
                 android:scaleType="centerCrop"
                 android:layout_width="120dp"
                 android:layout_height="120dp"/>
@@ -40,75 +41,85 @@
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/FABCambiarImg"
                 android:layout_alignParentEnd="true"
+                app:tint="@android:color/white"
+                android:backgroundTint="@color/mi_color"
                 app:fabSize="mini"
-                android:src="@drawable/ic_select_image"
+                android:src="@drawable/ic_selec_imagen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
+
+
         </RelativeLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/PerfilRL"
-            android:layout_marginTop="10dp"
-            app:boxCornerRadiusTopStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusBottomEnd="8dp">
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Nombres -->
+        <!--Nombres-->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/TILNombres"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/PerfilRL"
+            android:layout_below="@+id/perfilRL"
             android:layout_marginTop="10dp"
             app:boxCornerRadiusTopStart="8dp"
+            app:boxCornerRadiusBottomEnd="8dp"
             app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusBottomEnd="8dp">
+            app:boxCornerRadiusBottomStart="8dp">
 
             <EditText
-                android:id="@+id/Et_nombre"
-                android:hint="@string/Et_nombre"
+                android:id="@+id/Et_nombres"
+                android:hint="@string/Et_nombres"
                 android:inputType="textPersonName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
+
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Fecha de Nacimiento -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/TIL_Nac"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/LL_calendario"
+            android:layout_below="@id/TILNombres"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/TILNombres"
-            android:layout_marginTop="10dp"
-            app:boxCornerRadiusTopStart="8dp"
-            app:boxCornerRadiusTopEnd="8dp"
-            app:boxCornerRadiusBottomStart="8dp"
-            app:boxCornerRadiusBottomEnd="8dp">
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
 
-            <EditText
-                android:id="@+id/Et_f_nac"
-                android:hint="@string/Et_f_nac"
+            <ImageView
+                android:id="@+id/Iv_abrir_cal"
+                android:layout_gravity="center"
+                android:src="@drawable/calendario"
+                android:layout_marginEnd="7dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"/>
+
+            <!--Fecha de nac-->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/TIL_Nac"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/TILNombres"
+                app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <EditText
+                    android:id="@+id/Et_f_nac"
+                    android:hint="@string/Et_f_nac"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
 
-        <!-- Cod + Telefono -->
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+
+        <!--Cód + Teléfono-->
         <RelativeLayout
-            android:id="@+id/RL_cod_Tel"
+            android:id="@+id/RL_Cod_Tel"
+            android:layout_below="@+id/LL_calendario"
             android:layout_marginTop="10dp"
-            android:layout_below="@+id/TIL_Nac"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -117,19 +128,19 @@
                 android:gravity="center"
                 app:ccp_autoDetectCountry="true"
                 app:ccp_rememberLastSelection="true"
+                android:layout_centerVertical="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-            <!-- Numero Telefonico -->
+            <!--Número telefónico-->
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toEndOf="@+id/selectorCod"
-                android:layout_marginTop="10dp"
                 app:boxCornerRadiusTopStart="8dp"
+                app:boxCornerRadiusBottomEnd="8dp"
                 app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusBottomStart="8dp"
-                app:boxCornerRadiusBottomEnd="8dp">
+                app:boxCornerRadiusBottomStart="8dp">
 
                 <EditText
                     android:id="@+id/Et_telefono"
@@ -138,7 +149,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
+
             </com.google.android.material.textfield.TextInputLayout>
+
 
         </RelativeLayout>
 
@@ -147,9 +160,9 @@
             android:text="@string/Btn_actualizar"
             android:textAllCaps="true"
             android:layout_centerInParent="true"
-            android:layout_below="@+id/RL_cod_Tel"
+            android:layout_below="@+id/RL_Cod_Tel"
             android:layout_marginTop="15dp"
-            app:icon="@drawable/ic_edit"
+            app:icon="@drawable/ic_editar"
             android:layout_width="200dp"
             android:layout_height="@dimen/m_button_height"/>
 

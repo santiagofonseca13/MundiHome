@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginBottom="1dp"
+    app:cardElevation="0dp"
+    app:contentPadding="8dp"
+    app:cardCornerRadius="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!--Imagen de perfil-->
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/Iv_imagen_perfil"
+            android:scaleType="centerCrop"
+            android:src="@drawable/img_perfil"
+            android:layout_width="50dp"
+            android:layout_height="50dp"/>
+
+        <!--Nombres-->
+        <TextView
+            android:id="@+id/Tv_nombres_comentario"
+            android:text="@string/Tv_nombres_comentario"
+            android:layout_marginStart="7dp"
+            android:layout_toEndOf="@id/Iv_imagen_perfil"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!--Fecha de publicación-->
+        <TextView
+            android:id="@+id/Tv_fecha_comentario"
+            android:text="@string/Tv_fecha_comentario"
+            android:layout_alignParentEnd="true"
+            android:textSize="13sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!--Comentario-->
+        <TextView
+            android:id="@+id/Tv_comentario"
+            android:text="@string/Tv_comentario"
+            android:layout_marginStart="7dp"
+            android:layout_below="@id/Tv_nombres_comentario"
+            android:layout_toEndOf="@id/Iv_imagen_perfil"
+            android:layout_marginTop="5dp"
+            android:textSize="13sp"
+            android:maxLines="2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

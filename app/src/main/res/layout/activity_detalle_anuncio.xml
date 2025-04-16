@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DetalleAnuncio.DetalleAnuncio">
+
+    <!--Toolbar-->
+    <RelativeLayout
+        android:id="@+id/ToolbarRl"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/m_toolbar_height">
+
+        <ImageButton
+            android:id="@+id/Ib_regresar"
+            android:src="@drawable/ic_regresar"
+            android:background="@android:color/transparent"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!--Editar-->
+        <ImageButton
+            android:id="@+id/Ib_editar"
+            android:src="@drawable/ic_editar"
+            android:background="@android:color/transparent"
+            android:layout_toStartOf="@+id/Ib_eliminar"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!--Eliminar-->
+        <ImageButton
+            android:id="@+id/Ib_eliminar"
+            android:src="@drawable/ic_eliminar"
+            android:background="@android:color/transparent"
+            android:layout_toStartOf="@+id/Ib_fav"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!--Fav - no fav-->
+        <ImageButton
+            android:id="@+id/Ib_fav"
+            android:src="@drawable/ic_no_favorito"
+            android:layout_centerInParent="true"
+            android:layout_alignParentEnd="true"
+            android:background="@android:color/transparent"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </RelativeLayout>
+
+    <!--Información del anuncio-->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ToolbarRl">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp">
+
+            <!--Mostraremos las imágenes del anuncio-->
+            <androidx.viewpager2.widget.ViewPager2
+                android:id="@+id/imagenSliderVP"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"/>
+
+            <!--Símbolo del precio-->
+            <TextView
+                android:id="@+id/Tv_simbolo_precio"
+                android:text="@string/Tv_simbolo_precio"
+                android:layout_below="@+id/imagenSliderVP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Precio-->
+            <TextView
+                android:id="@+id/Tv_precio"
+                android:text="@string/Tv_precio"
+                android:layout_below="@+id/imagenSliderVP"
+                android:layout_toEndOf="@+id/Tv_simbolo_precio"
+                android:layout_marginStart="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Condición-->
+            <TextView
+                android:id="@+id/Tv_condicion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imagenSliderVP"
+                android:textAlignment="center"
+                android:layout_marginTop="5dp"
+                android:text="@string/Tv_condicion"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <!--Fecha de publicación-->
+            <TextView
+                android:id="@+id/Tv_fecha"
+                android:text="@string/Tv_fecha"
+                android:layout_below="@id/imagenSliderVP"
+                android:layout_alignParentEnd="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_detalle_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/Tv_fecha"
+                android:layout_marginTop="13dp"
+                android:text="@string/Txt_detalle_info"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_estado"
+                android:text="@string/Txt_estado"
+                android:layout_below="@id/Txt_detalle_info"
+                android:layout_marginTop="15dp"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Estado del anuncio-->
+            <TextView
+                android:id="@+id/Tv_estado"
+                android:text="@string/Tv_estado"
+                android:textStyle="bold|italic"
+                android:textSize="17sp"
+                android:layout_below="@id/Txt_estado"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_categoria"
+                android:text="@string/Txt_categoria"
+                android:layout_below="@id/Tv_estado"
+                android:layout_marginTop="5dp"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Categoría-->
+            <TextView
+                android:id="@+id/Tv_cat"
+                android:text="@string/Tv_cat"
+                android:layout_below="@+id/Txt_categoria"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_titulo"
+                android:text="@string/Txt_titulo"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@id/Tv_cat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Título-->
+            <TextView
+                android:id="@+id/Tv_titulo"
+                android:text="@string/Tv_titulo"
+                android:layout_below="@id/Txt_titulo"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_descripcion"
+                android:text="@string/Txt_descripcion"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/Tv_titulo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Descripción-->
+            <TextView
+                android:id="@+id/Tv_descr"
+                android:text="@string/Tv_descr"
+                android:layout_below="@id/Txt_descripcion"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_direccion"
+                android:text="@string/Txt_direccion"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@id/Tv_descr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Dirección-->
+            <TextView
+                android:id="@+id/Tv_direccion"
+                android:text="@string/Tv_direccion"
+                android:layout_below="@id/Txt_direccion"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_vistas"
+                android:text="@string/Txt_vistas"
+                android:textStyle="bold"
+                android:layout_below="@id/Tv_direccion"
+                android:textSize="18sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Vistas-->
+            <TextView
+                android:id="@+id/Tv_vistas"
+                android:text="@string/Tv_vistas"
+                android:layout_below="@id/Txt_vistas"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_descr_vendedor"
+                android:text="@string/Txt_descr_vendedor"
+                android:layout_below="@id/Tv_vistas"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/perfilVendedor"
+                android:layout_below="@id/Txt_descr_vendedor"
+                android:backgroundTint="#F2F4F4"
+                app:cardCornerRadius="10dp"
+                app:cardUseCompatPadding="true"
+                app:contentPadding="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <!--Imagen de perfil del vendedor-->
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/ImgPerfil"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/img_perfil"
+                        app:shapeAppearance="@style/ImageStyle_Circle"/>
+
+                    <!--Nombres del vendedor-->
+                    <TextView
+                        android:id="@+id/Tv_nombres"
+                        android:text="@string/Tv_nombres"
+                        android:textStyle="bold|italic"
+                        android:layout_marginStart="7dp"
+                        android:layout_toEndOf="@+id/ImgPerfil"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <!--Txt-->
+                    <TextView
+                        android:id="@+id/Txt_miembro"
+                        android:text="@string/Txt_miembro"
+                        android:layout_toEndOf="@id/ImgPerfil"
+                        android:layout_below="@id/Tv_nombres"
+                        android:layout_marginStart="7dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <!--Fecha de registro-->
+                    <TextView
+                        android:id="@+id/Tv_miembro"
+                        android:text="@string/Tv_miembro"
+                        android:layout_toEndOf="@id/Txt_miembro"
+                        android:layout_below="@+id/Tv_nombres"
+                        android:layout_marginStart="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <ImageView
+                        android:id="@+id/Iv_info_vendedor"
+                        android:layout_alignParentEnd="true"
+                        android:padding="10dp"
+                        android:src="@drawable/informacion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </RelativeLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!--Opciones-->
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/OpcionesLl"
+                android:layout_below="@id/perfilVendedor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_alignParentBottom="true">
+
+                <!--Mapa-->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/Btn_mapa"
+                    android:text="@string/Btn_mapa"
+                    android:layout_marginEnd="2dp"
+                    android:textSize="12sp"
+                    app:cornerRadius="8dp"
+                    app:icon="@drawable/ic_op_locacion"
+                    app:iconGravity="top"
+                    android:textAllCaps="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <!--Llamadas telefónicas-->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/Btn_llamar"
+                    android:text="@string/Btn_llamar"
+                    android:layout_marginEnd="2dp"
+                    android:textSize="12sp"
+                    app:cornerRadius="8dp"
+                    app:icon="@drawable/ic_op_llamar"
+                    app:iconGravity="top"
+                    android:textAllCaps="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <!--Envio de sms-->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/Btn_sms"
+                    android:text="@string/Btn_sms"
+                    android:layout_marginEnd="2dp"
+                    android:textSize="12sp"
+                    app:cornerRadius="8dp"
+                    app:icon="@drawable/ic_op_sms"
+                    app:iconGravity="top"
+                    android:textAllCaps="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <!--Chat-->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/Btn_chat"
+                    android:text="@string/Btn_chat"
+                    android:layout_marginEnd="2dp"
+                    android:textSize="12sp"
+                    app:cornerRadius="8dp"
+                    app:icon="@drawable/ic_op_chat"
+                    app:iconGravity="top"
+                    android:textAllCaps="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+
+
+
+</RelativeLayout>

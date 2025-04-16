@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="10dp"
-    tools:context=".fragmentos.fragmentCuenta">
+    tools:context=".Fragmentos.FragmentCuenta">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -22,29 +22,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <ImageView
-            android:id="@+id/Tv_perfil"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/Iv_perfil"
             android:layout_below="@+id/Txt_perfil"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:src="@drawable/usuario"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:src="@drawable/img_perfil"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="18dp"
             android:scaleType="centerCrop"/>
 
-        <!--Informacion -->
         <TextView
             android:id="@+id/Txt_informacion"
             android:text="@string/Txt_informacion"
-            android:layout_below="@+id/Tv_perfil"
+            android:layout_below="@+id/Iv_perfil"
             android:layout_marginTop="10dp"
             android:textStyle="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:layout_below="@id/Txt_informacion"
-            android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -52,151 +45,193 @@
         <TextView
             android:id="@+id/Txt_nombres"
             android:text="@string/Txt_nombres"
-            android:layout_below="@+id/Txt_informacion"
+            android:layout_below="@id/Txt_informacion"
             android:layout_marginTop="15dp"
-            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/Tv_nombres"
             android:text="@string/Tv_nombres"
-            android:layout_below="@id/Txt_informacion"
+            android:layout_below="@+id/Txt_informacion"
             android:layout_marginTop="15dp"
             android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <!-- Email -->
+        <!--Email-->
         <TextView
             android:id="@+id/Txt_email"
             android:text="@string/Txt_email"
-            android:layout_below="@+id/Tv_nombres"
+            android:layout_below="@id/Txt_nombres"
             android:layout_marginTop="15dp"
-            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/Tv_email"
             android:text="@string/Tv_email"
-            android:layout_below="@id/Txt_nombres"
+            android:layout_below="@+id/Txt_nombres"
             android:layout_marginTop="15dp"
             android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <!-- Fecha de nacimiento -->
+        <!--Fecha de nac-->
         <TextView
             android:id="@+id/Txt_nacimiento"
             android:text="@string/Txt_nacimiento"
-            android:layout_below="@+id/Txt_email"
+            android:layout_below="@id/Txt_email"
             android:layout_marginTop="15dp"
-            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/Tv_nacimiento"
             android:text="@string/Tv_nacimiento"
-            android:layout_below="@id/Txt_email"
-            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/Txt_email"
             android:layout_marginTop="15dp"
+            android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <!-- Miembro desde -->
+        <!--Miembro desde-->
         <TextView
             android:id="@+id/Txt_miembro"
             android:text="@string/Txt_miembro"
-            android:layout_below="@+id/Txt_nacimiento"
+            android:layout_below="@id/Txt_nacimiento"
             android:layout_marginTop="15dp"
-            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/Tv_miembro"
             android:text="@string/Tv_miembro"
-            android:layout_below="@id/Txt_nacimiento"
-            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/Txt_nacimiento"
             android:layout_marginTop="15dp"
+            android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <!-- Telefono -->
+
+        <!--Teléfono-->
         <TextView
             android:id="@+id/Txt_telefono"
             android:text="@string/Txt_telefono"
-            android:layout_below="@+id/Txt_miembro"
+            android:layout_below="@id/Txt_miembro"
             android:layout_marginTop="15dp"
-            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/Tv_telefono"
             android:text="@string/Tv_telefono"
-            android:layout_below="@id/Txt_miembro"
-            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/Txt_miembro"
             android:layout_marginTop="15dp"
+            android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <!-- Estado de cuenta -->
+
+        <!--Estado de la cuenta-->
         <TextView
             android:id="@+id/Txt_estado_cuenta"
             android:text="@string/Txt_estado_cuenta"
-            android:layout_below="@+id/Txt_telefono"
+            android:layout_below="@id/Txt_telefono"
             android:layout_marginTop="15dp"
-            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/Tv_estado_cuenta"
             android:text="@string/Tv_estado_cuenta"
-            android:layout_below="@id/Txt_telefono"
-            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/Txt_telefono"
             android:layout_marginTop="15dp"
+            android:layout_alignParentEnd="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/TxtOpciones"
             android:text="@string/TxtOpciones"
-            android:layout_below="@+id/Txt_estado_cuenta"
+            android:layout_below="@id/Txt_estado_cuenta"
             android:layout_marginTop="15dp"
             android:textStyle="bold"
             android:textSize="17sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-        <!-- Editar Perfil -->
+        <!--Editar perfil-->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/Btn_editar_perfil"
-            android:text="@string/Btn_editar_perfil"
+            android:layout_width="220dp"
+            android:layout_height="@dimen/m_button_height"
             android:layout_below="@+id/TxtOpciones"
-            android:textAllCaps="true"
-            app:icon="@drawable/ic_edit"
             android:layout_centerInParent="true"
-            android:layout_width="200dp"
-            android:layout_height="@dimen/m_button_height"/>
+            android:text="@string/Btn_editar_perfil"
+            android:textAllCaps="true"
+            app:icon="@drawable/ic_editar" />
 
-        <!-- Cerrar Sesión -->
+        <!--Cambiar password-->
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/Btn_cerrar_sesión"
-            android:text="@string/Btn_cerrar_sesión"
-            android:layout_below="@id/Btn_editar_perfil"
-            android:textAllCaps="true"
-            app:icon="@drawable/ic_salir"
+            android:id="@+id/Btn_cambiar_pass"
+            android:layout_width="220dp"
+            android:layout_height="@dimen/m_button_height"
+            android:layout_below="@+id/Btn_editar_perfil"
             android:layout_centerInParent="true"
-            android:layout_width="200dp"
-            android:layout_height="@dimen/m_button_height"/>
+            android:text="@string/Btn_cambiar_pass"
+            android:textAllCaps="true"
+            app:icon="@drawable/ic_password" />
+
+        <!--Verificar cuenta-->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/Btn_verificar_cuenta"
+            android:layout_width="220dp"
+            android:layout_height="@dimen/m_button_height"
+            android:layout_below="@+id/Btn_cambiar_pass"
+            android:layout_centerInParent="true"
+            android:text="@string/Btn_verificar_cuenta"
+            android:textAllCaps="true"
+            app:icon="@drawable/ic_verificar" />
+
+        <!--Eliminar todos mis anuncios-->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/Btn_eliminar_anuncios"
+            android:text="@string/Btn_eliminar_anuncios"
+            android:layout_below="@+id/Btn_verificar_cuenta"
+            android:layout_centerInParent="true"
+            android:textAllCaps="true"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_eliminar_anuncios"/>
+
+        <!--Eliminar cuenta -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/Btn_eliminar_cuenta"
+            android:text="@string/Btn_eliminar_cuenta"
+            android:layout_below="@+id/Btn_eliminar_anuncios"
+            android:layout_centerInParent="true"
+            android:textAllCaps="true"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/ic_eliminar_cuenta"/>
+
+
+
+        <!--Cerrar sesión-->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/Btn_cerrar_sesion"
+            android:layout_width="220dp"
+            android:layout_height="@dimen/m_button_height"
+            android:layout_below="@+id/Btn_eliminar_cuenta"
+            android:layout_centerInParent="true"
+            android:text="@string/Btn_cerrar_sesion"
+            android:textAllCaps="true"
+            app:icon="@drawable/ic_salir" />
+
 
     </RelativeLayout>
 
-    
 
 
 </ScrollView>

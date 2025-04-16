@@ -3,22 +3,25 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
     <RelativeLayout
         android:id="@+id/ToolbarRl"
+        android:background="@color/mi_color"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/m_button_height">
+        android:layout_height="@dimen/m_toolbar_height">
 
         <TextView
-            android:id="@+id/TTituloR1"
+            android:id="@+id/TituloRl"
+            android:text="@string/TituloRl"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:textSize="17sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/TituloR1" />
+            android:layout_centerInParent="true"/>
 
         <View
             android:layout_width="match_parent"
@@ -26,14 +29,15 @@
             android:background="#ccc"
             android:layout_alignParentBottom="true"/>
 
+
     </RelativeLayout>
 
     <FrameLayout
         android:id="@+id/FragmentL1"
         android:layout_below="@id/ToolbarRl"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/View1" />
+        android:layout_above="@+id/View1"/>
 
     <View
         android:id="@+id/View1"
@@ -48,12 +52,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         app:menu="@menu/mi_menu"
-        app:labelVisibilityMode="labeled" />
+        app:labelVisibilityMode="labeled"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/FAB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        app:tint="@android:color/white"
+        android:backgroundTint="@color/mi_color"
         android:src="@drawable/ic_agregar"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"

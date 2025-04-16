@@ -14,14 +14,14 @@
         />
 
     <item
-        android:id="@+id/Item_publicar"
-        android:title="@string/Item_publicar"
+        android:id="@+id/Item_vender"
+        android:title="@string/Item_vender"
         android:enabled="false"
         />
 
     <item
-        android:id="@+id/Item_mis_anuncios"
-        android:title="@string/Item_mis_anuncios"
+        android:id="@+id/Item_Mis_Anuncios"
+        android:title="@string/Item_Mis_Anuncios"
         android:icon="@drawable/ic_mis_anuncios"
         />
 
@@ -30,4 +30,5 @@
         android:title="@string/Item_Cuenta"
         android:icon="@drawable/ic_cuenta"
         />
+
 </menu>
