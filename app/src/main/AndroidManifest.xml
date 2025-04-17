@@ -85,7 +85,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/mi_google_maps_api_key" />
+            android:value="AIzaSyD10DKZ_zOLTYB7cDM_vgYdsA9RftE-aQ8" />
 
         <service
             android:name=".Notificaciones.MyFcmService"

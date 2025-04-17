@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "App Compra y Venta"
+rootProject.name = "mundihome"
 include(":app")
