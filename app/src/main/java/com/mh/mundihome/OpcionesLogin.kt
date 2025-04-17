@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Patterns
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -13,8 +14,8 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.database.FirebaseDatabase
-import com.mh.mundihome.Opciones_login.Login_email
 import com.mh.mundihome.databinding.ActivityOpcionesLoginBinding
+import kotlin.toString
 
 class OpcionesLogin : AppCompatActivity() {
 
@@ -37,6 +38,18 @@ class OpcionesLogin : AppCompatActivity() {
         firebaseAuth = FirebaseAuth.getInstance()
         comprobarSesion()
 
+        binding.BtnIngresar.setOnClickListener {
+            validarInfo()
+        }
+
+        binding.TxtRegistrarme.setOnClickListener {
+            startActivity(Intent(this@OpcionesLogin, Registro_email::class.java))
+        }
+
+        binding.TvRecuperar.setOnClickListener {
+            startActivity(Intent(this@OpcionesLogin, RecuperarPassword::class.java))
+        }
+
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -44,13 +57,57 @@ class OpcionesLogin : AppCompatActivity() {
 
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        binding.IngresarEmail.setOnClickListener {
-            startActivity(Intent(this@OpcionesLogin, Login_email::class.java))
-        }
-
         binding.IngresarGoogle.setOnClickListener {
             googleLogin()
         }
+    }
+
+    private var email = ""
+    private var password = ""
+    private fun validarInfo() {
+        email = binding.EtEmail.text.toString().trim()
+        password = binding.EtPassword.text.toString().trim()
+
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
+            binding.EtEmail.error = "Email inválido"
+            binding.EtEmail.requestFocus()
+        }
+        else if (email.isEmpty()){
+            binding.EtEmail.error = "Ingrese email"
+            binding.EtEmail.requestFocus()
+        }
+        else if (password.isEmpty()){
+            binding.EtPassword.error = "Ingrese password"
+            binding.EtPassword.requestFocus()
+        }else{
+            loginUsuario()
+        }
+
+    }
+
+    private fun loginUsuario() {
+        progressDialog.setMessage("Ingresando")
+        progressDialog.show()
+
+        firebaseAuth.signInWithEmailAndPassword(email, password)
+            .addOnSuccessListener {
+                progressDialog.dismiss()
+                startActivity(Intent(this, MainActivity::class.java))
+                finishAffinity()
+                Toast.makeText(
+                    this,
+                    "Bienvenido(a)",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            .addOnFailureListener {e->
+                progressDialog.dismiss()
+                Toast.makeText(
+                    this,
+                    "No se pudo iniciar sesión debido a ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
     }
 
     private fun googleLogin() {

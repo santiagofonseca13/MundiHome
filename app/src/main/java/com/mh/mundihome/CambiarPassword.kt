@@ -8,7 +8,6 @@ import android.widget.Toast
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.mh.mundihome.Opciones_login.Login_email
 import com.mh.mundihome.databinding.ActivityCambiarPasswordBinding
 
 class CambiarPassword : AppCompatActivity() {
@@ -102,7 +101,7 @@ class CambiarPassword : AppCompatActivity() {
                 ).show()
 
                 firebaseAuth.signOut()
-                startActivity(Intent(this, Login_email::class.java))
+                startActivity(Intent(this, OpcionesLogin::class.java))
                 finishAffinity()
             }
             .addOnFailureListener {e->
