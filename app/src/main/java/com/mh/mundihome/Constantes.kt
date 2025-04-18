@@ -22,7 +22,7 @@ object Constantes {
 
 
     const val anuncio_disponible = "Disponible"
-    const val anuncio_vendido = "Vendido"
+    const val anuncio_vendido = "No disponible / Vendido"
 
     const val NOTIFICACION_DE_NUEVO_MENSAJE = "NOTIFICACION_DE_NUEVO_MENSAJE"
     const val FCM_SERVER_KEY =
@@ -43,6 +43,81 @@ object Constantes {
         "Mascotas"
     )
 
+    val tipo_inmueble = arrayOf(
+        "Apartamento",
+        "Finca",
+        "Casa",
+        "Local comercial",
+    )
+
+    val ciudad = arrayOf(
+        "Zipaquira"
+    )
+
+    val estrato = arrayOf(
+        "N/A",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+    )
+
+    val dormitorios = arrayOf(
+        "N/A",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+    )
+
+    val banos = arrayOf(
+        "N/A",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10"
+    )
+
+    val estacionamiento = arrayOf(
+        "N/A",
+        "Si",
+        "No"
+    )
+
+    val marcotas = arrayOf(
+        "N/A",
+        "Si",
+        "No"
+    )
+
+    val administracion = arrayOf(
+        "N/A",
+        "Si",
+        "No"
+    )
+
+    val ubicacion = arrayOf(
+        "N/A"
+    )
+
     val categoriasIcono = arrayOf(
         R.drawable.ic_categoria_todos,
         R.drawable.ic_categoria_mobiles,
@@ -56,12 +131,6 @@ object Constantes {
         R.drawable.ic_categoria_deportes,
         R.drawable.ic_categoria_juguetes,
         R.drawable.ic_categoria_mascotas
-    )
-
-    val condiciones = arrayOf(
-        "Nuevo",
-        "Usado",
-        "Renovado"
     )
 
     fun obtenerTiempoDis() : Long{

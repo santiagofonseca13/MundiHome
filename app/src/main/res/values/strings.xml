@@ -61,9 +61,21 @@
     <string name="Btn_actualizar">Actualizar</string>
 
     <!--Crear anuncio-->
-    <string name="Et_marca">Nombre de la marca</string>
-    <string name="Categoria">Categoria</string>
-    <string name="Condicion">Condicion</string>
+    <string name="Tipo_Inmueble">Tipo Inmueble</string>
+    <string name="Ciudad">Ciudad</string>
+    <string name="Estado">Estado: Nuevo/Usado/EnConstruccion</string>
+    <string name="Estracto">Estracto</string>
+    <string name="Area_Construida">Area_Construida: m2</string>
+    <string name="Area_Total">Area_Total: m2</string>
+    <string name="Dormitorios">No Dormitorios</string>
+    <string name="Baños">No Baños</string>
+    <string name="Estacionamiento">Estacionamiento Si/No</string>
+    <string name="Piso">No Piso</string>
+    <string name="Acepta_Mascotas">Acepta_Mascotas: Si/No</string>
+    <string name="Incluye_Administracion">Incluye_Administracion: Si/No</string>
+    <string name="Detalles_Contruccion">Detalles_Contruccion/Materiales/Acabados/Pisos/etc</string>
+    <string name="Servicios">Servicios: Ascensores/Areas Comunes/etc</string>
+    <string name="EstadoLegal">EstadoLegal: Escritura/Matricula/etc</string>
     <string name="Locacion">Locación</string>
     <string name="Et_precio">Precio</string>
     <string name="Et_titulo">Título</string>

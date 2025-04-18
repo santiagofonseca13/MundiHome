@@ -17,9 +17,7 @@ class FiltrarAnuncio (
             filtro = filtro.toString().uppercase(Locale.getDefault())
             val filtroModelo = ArrayList<ModeloAnuncio>()
             for (i in filtroLista.indices){
-                if (filtroLista[i].marca.uppercase(Locale.getDefault()).contains(filtro) ||
-                    filtroLista[i].categoria.uppercase(Locale.getDefault()).contains(filtro)||
-                    filtroLista[i].condicion.uppercase(Locale.getDefault()).contains(filtro) ||
+                if (filtroLista[i].condicion.uppercase(Locale.getDefault()).contains(filtro) ||
                     filtroLista[i].titulo.uppercase(Locale.getDefault()).contains(filtro)){
                     filtroModelo.add(filtroLista[i])
                 }

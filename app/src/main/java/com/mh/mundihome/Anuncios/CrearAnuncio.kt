@@ -53,11 +53,29 @@ class CrearAnuncio : AppCompatActivity() {
         progressDialog.setTitle("Espere por favor")
         progressDialog.setCanceledOnTouchOutside(false)
 
-        val adaptadorCat = ArrayAdapter(this, R.layout.item_categoria, Constantes.categorias)
-        binding.Categoria.setAdapter(adaptadorCat)
+        val  adaptadorTipoInmueble = ArrayAdapter(this, R.layout.item_tipo_inmueble, Constantes.tipo_inmueble)
+        binding.TipoInmueble.setAdapter(adaptadorTipoInmueble)
 
-        val adaptadorCon = ArrayAdapter(this, R.layout.item_condicion, Constantes.condiciones)
-        binding.Condicion.setAdapter(adaptadorCon)
+        val  adaptadorCiudad = ArrayAdapter(this, R.layout.item_ciudad, Constantes.ciudad)
+        binding.Ciudad.setAdapter(adaptadorCiudad)
+
+        val  adaptadorEstrato = ArrayAdapter(this, R.layout.item_estracto, Constantes.estrato)
+        binding.Estracto.setAdapter(adaptadorEstrato)
+
+        val  adaptadorDormitorios = ArrayAdapter(this, R.layout.item_dormitorios, Constantes.dormitorios)
+        binding.Dormitorios.setAdapter(adaptadorDormitorios)
+
+        val  adaptadorBaños = ArrayAdapter(this, R.layout.item_banos, Constantes.banos)
+        binding.BaOs.setAdapter(adaptadorBaños)
+
+        val  adaptadorEstacionamiento = ArrayAdapter(this, R.layout.item_estacionamiento, Constantes.estacionamiento)
+        binding.Estacionamiento.setAdapter(adaptadorEstacionamiento)
+
+        val  adaptadorMascotas = ArrayAdapter(this, R.layout.item_mascotas, Constantes.marcotas)
+        binding.AceptaMascotas.setAdapter(adaptadorMascotas)
+
+        val  adaptadorAdministracion = ArrayAdapter(this, R.layout.item_administracion, Constantes.administracion)
+        binding.IncluyeAdministracion.setAdapter(adaptadorAdministracion)
 
         Edicion = intent.getBooleanExtra("Edicion", false)
 
@@ -108,11 +126,6 @@ class CrearAnuncio : AppCompatActivity() {
                     longitud = (snapshot.child("longitud").value) as Double
 
                     /*Setear la información en las vistas*/
-                    binding.EtMarca.setText(marca)
-                    binding.Categoria.setText(categoria)
-                    binding.Categoria.isEnabled = false
-                    binding.Condicion.setText(condicion)
-                    binding.Condicion.isEnabled = false
                     binding.Locacion.setText(locacion)
                     binding.EtPrecio.setText(precio)
                     binding.EtTitulo.setText(titulo)
@@ -144,9 +157,21 @@ class CrearAnuncio : AppCompatActivity() {
                 }
             })
     }
-
-    private var marca = ""
-    private var categoria = ""
+    private var tipoInmueble = ""
+    private var ciudad = ""
+    private var estado =""
+    private var estracto = ""
+    private var areaConstruida =""
+    private var areaTotal =""
+    private var dormitorios =""
+    private var banos = ""
+    private var estacionamiento = ""
+    private var piso =""
+    private var mascotas = ""
+    private var administracion = ""
+    private var construccion =""
+    private var servicios =""
+    private var estadoLegal =""
     private var condicion = ""
     private var direccion = ""
     private var precio = ""
@@ -155,25 +180,85 @@ class CrearAnuncio : AppCompatActivity() {
     private var latitud = 0.0
     private var longitud = 0.0
     private fun validarDatos(){
-        marca = binding.EtMarca.text.toString().trim()
-        categoria = binding.Categoria.text.toString().trim()
-        condicion = binding.Condicion.text.toString().trim()
+        tipoInmueble = binding.TipoInmueble.text.toString().trim()
+        ciudad = binding.Ciudad.text.toString().trim()
+        estado = binding.Estado.text.toString().trim()
+        estracto = binding.Estracto.text.toString().trim()
+        areaConstruida = binding.AreaConstruida.text.toString().trim()
+        areaTotal = binding.AreaTotal.text.toString().trim()
+        dormitorios = binding.Dormitorios.text.toString().trim()
+        banos = binding.BaOs.text.toString().trim()
+        estacionamiento = binding.Estacionamiento.text.toString().trim()
+        piso = binding.Piso.text.toString().trim()
+        mascotas = binding.AceptaMascotas.text.toString().trim()
+        administracion = binding.IncluyeAdministracion.text.toString().trim()
+        construccion = binding.AreaConstruida.text.toString().trim()
+        servicios = binding.Servicios.text.toString().trim()
+        estadoLegal = binding.EstadoLegal.text.toString().trim()
         direccion = binding.Locacion.text.toString().trim()
         precio = binding.EtPrecio.text.toString().trim()
         titulo = binding.EtTitulo.text.toString().trim()
         descripcion = binding.EtDescripcion.text.toString().trim()
 
-        if (marca.isEmpty()){
-            binding.EtMarca.error = "Ingrese una marca"
-            binding.EtMarca.requestFocus()
+        if (tipoInmueble.isEmpty()){
+            binding.TipoInmueble.error = "Seleccione el tipo de inmueble"
+            binding.TipoInmueble.requestFocus()
         }
-        else if (categoria.isEmpty()){
-            binding.Categoria.error = "Ingrese una categoria"
-            binding.Categoria.requestFocus()
+        else if (ciudad.isEmpty()) {
+            binding.Ciudad.error = "Seleccione la ciudad"
+            binding.Ciudad.requestFocus()
         }
-        else if (condicion.isEmpty()){
-            binding.Condicion.error = "Ingrese una condición"
-            binding.Condicion.requestFocus()
+        else if (estado.isEmpty()) {
+            binding.Estado.error = "Seleccione el estado"
+            binding.Estado.requestFocus()
+        }
+        else if (estracto.isEmpty()) {
+            binding.Estracto.error = "Seleccione el estrato"
+            binding.Estracto.requestFocus()
+        }
+        else if (areaConstruida.isEmpty()) {
+            binding.AreaConstruida.error = "Ingrese el área construida"
+            binding.AreaConstruida.requestFocus()
+        }
+        else if (areaTotal.isEmpty()) {
+            binding.AreaTotal.error = "Ingrese el área total"
+            binding.AreaTotal.requestFocus()
+        }
+        else if (dormitorios.isEmpty()) {
+            binding.Dormitorios.error = "Seleccione la cantidad de dormitorios"
+            binding.Dormitorios.requestFocus()
+        }
+        else if (banos.isEmpty()) {
+            binding.BaOs.error = "Seleccione la cantidad de baños"
+            binding.BaOs.requestFocus()
+        }
+        else if (estacionamiento.isEmpty()) {
+            binding.Estacionamiento.error = "Seleccione una opción"
+            binding.Estacionamiento.requestFocus()
+        }
+        else if (piso.isEmpty()) {
+            binding.Piso.error = "Ingrese la cantidad de pisos"
+            binding.Piso.requestFocus()
+        }
+        else if (mascotas.isEmpty()) {
+            binding.AceptaMascotas.error = "Selecione una opción"
+            binding.AceptaMascotas.requestFocus()
+        }
+        else if (administracion.isEmpty()) {
+            binding.IncluyeAdministracion.error = "Seleccione una opción"
+            binding.IncluyeAdministracion.requestFocus()
+        }
+        else if (construccion.isEmpty()) {
+            binding.AreaConstruida.error = "Ingrese el área construida"
+            binding.AreaConstruida.requestFocus()
+        }
+        else if (servicios.isEmpty()) {
+            binding.Servicios.error = "Ingrese los servicios"
+            binding.Servicios.requestFocus()
+        }
+        else if (estadoLegal.isEmpty()) {
+            binding.EstadoLegal.error = "Seleccione una opción"
+            binding.EstadoLegal.requestFocus()
         }
         else if (direccion.isEmpty()){
             binding.Locacion.error = "Ingrese una locación"
@@ -213,13 +298,26 @@ class CrearAnuncio : AppCompatActivity() {
 
         val hashMap = HashMap<String, Any>()
 
-        hashMap["marca"] = "${marca}"
-        hashMap["categoria"] = "${categoria}"
-        hashMap["condicion"] = "${condicion}"
+        hashMap["tipoInmueble"] = "${tipoInmueble}"
+        hashMap["ciudad"] = "${ciudad}"
         hashMap["direccion"] = "${direccion}"
+        hashMap["estado"] = "${Constantes.anuncio_disponible}"
+        hashMap["estrato"] = "${estracto}"
+        hashMap["areaContruida"] = "${areaConstruida}"
+        hashMap["areaTotal"] = "${areaTotal}"
         hashMap["precio"] = "${precio}"
+        hashMap["descripción"] = "${descripcion}"
+        hashMap["dormitorios"] = "${dormitorios}"
+        hashMap["baños"] = "${banos}"
+        hashMap["estacionamiento"] = "${estacionamiento}"
+        hashMap["piso"] = "${piso}"
+        hashMap["mascotas"] = "${mascotas}"
+        hashMap["administración"] = "${administracion}"
+        hashMap["construcción"] = "${construccion}"
+        hashMap["servicios"] = "${servicios}"
+        hashMap["estadoLegal"] = "${estadoLegal}"
+        hashMap["condicion"] = "${condicion}"
         hashMap["titulo"] = "${titulo}"
-        hashMap["descripcion"] = "${descripcion}"
         hashMap["latitud"] = latitud
         hashMap["longitud"] = longitud
 
@@ -264,13 +362,26 @@ class CrearAnuncio : AppCompatActivity() {
         val hashMap = HashMap<String, Any>()
         hashMap["id"] = "${keyId}"
         hashMap["uid"] = "${firebaseAuth.uid}"
-        hashMap["marca"] = "${marca}"
-        hashMap["categoria"] = "${categoria}"
-        hashMap["condicion"] = "${condicion}"
+        hashMap["tipoInmueble"] = "${tipoInmueble}"
+        hashMap["ciudad"] = "${ciudad}"
         hashMap["direccion"] = "${direccion}"
+        hashMap["estado"] = "${Constantes.anuncio_disponible}"
+        hashMap["estracto"] = "${estracto}"
+        hashMap["areaContruida"] = "${areaConstruida}"
+        hashMap["areaTotal"] = "${areaTotal}"
         hashMap["precio"] = "${precio}"
+        hashMap["descripción"] = "${descripcion}"
+        hashMap["dormitorios"] = "${dormitorios}"
+        hashMap["baños"] = "${banos}"
+        hashMap["estacionamiento"] = "${estacionamiento}"
+        hashMap["piso"] = "${piso}"
+        hashMap["mascotas"] = "${mascotas}"
+        hashMap["administración"] = "${administracion}"
+        hashMap["construcción"] = "${construccion}"
+        hashMap["servicios"] = "${servicios}"
+        hashMap["estadoLegal"] = "${estadoLegal}"
+        hashMap["condicion"] = "${condicion}"
         hashMap["titulo"] = "${titulo}"
-        hashMap["descripcion"] = "${descripcion}"
         hashMap["estado"] = "${Constantes.anuncio_disponible}"
         hashMap["tiempo"] = tiempo
         hashMap["latitud"] = latitud
@@ -344,13 +455,25 @@ class CrearAnuncio : AppCompatActivity() {
     private fun limpiarCampos(){
         imagenSelecArrayList.clear()
         adaptadorImagenSel.notifyDataSetChanged()
-        binding.EtMarca.setText("")
-        binding.Categoria.setText("")
-        binding.Condicion.setText("")
         binding.Locacion.setText("")
         binding.EtPrecio.setText("")
         binding.EtTitulo.setText("")
         binding.EtDescripcion.setText("")
+        binding.TipoInmueble.setText("")
+        binding.Ciudad.setText("")
+        binding.Estado.setText("")
+        binding.Estracto.setText("")
+        binding.AreaConstruida.setText("")
+        binding.AreaTotal.setText("")
+        binding.Dormitorios.setText("")
+        binding.BaOs.setText("")
+        binding.Estacionamiento.setText("")
+        binding.Piso.setText("")
+        binding.AceptaMascotas.setText("")
+        binding.IncluyeAdministracion.setText("")
+        binding.DetallesContruccion.setText("")
+        binding.Servicios.setText("")
+        binding.EstadoLegal.setText("")
     }
 
     private fun mostrarOpciones() {

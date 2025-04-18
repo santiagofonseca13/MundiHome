@@ -194,7 +194,6 @@ class DetalleAnuncio : AppCompatActivity() {
                         val descripcion = modeloAnuncio.descripcion
                         val direccion = modeloAnuncio.direccion
                         val condicion = modeloAnuncio.condicion
-                        val categoria = modeloAnuncio.categoria
                         val precio = modeloAnuncio.precio
                         val estado = modeloAnuncio.estado
                         val vista = modeloAnuncio.contadorVistas
@@ -240,7 +239,6 @@ class DetalleAnuncio : AppCompatActivity() {
                         binding.TvDescr.text = descripcion
                         binding.TvDireccion.text = direccion
                         binding.TvCondicion.text = condicion
-                        binding.TvCat.text = categoria
                         binding.TvPrecio.text = precio
                         binding.TvEstado.text = estado
                         binding.TvFecha.text = formatoFecha
