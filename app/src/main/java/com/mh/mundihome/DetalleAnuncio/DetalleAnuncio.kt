@@ -190,6 +190,20 @@ class DetalleAnuncio : AppCompatActivity() {
                         val modeloAnuncio = snapshot.getValue(ModeloAnuncio::class.java)
 
                         uidVendedor = "${modeloAnuncio!!.uid}"
+                        val categoria = modeloAnuncio.categoria
+                        val tipoInmueble = modeloAnuncio.tipoInmueble
+                        val estracto = modeloAnuncio.estracto
+                        val areaContruida = modeloAnuncio.areaContruida
+                        val areaTotal = modeloAnuncio.areaTotal
+                        val dormitorios = modeloAnuncio.dormitorios
+                        val baños = modeloAnuncio.baños
+                        val estacionamiento = modeloAnuncio.estacionamiento
+                        val piso = modeloAnuncio.piso
+                        val mascotas = modeloAnuncio.mascotas
+                        val administración = modeloAnuncio.administración
+                        val construcción = modeloAnuncio.construcción
+                        val servicios = modeloAnuncio.servicios
+                        val estadoLegal = modeloAnuncio.estadoLegal
                         val titulo = modeloAnuncio.titulo
                         val descripcion = modeloAnuncio.descripcion
                         val direccion = modeloAnuncio.direccion
@@ -235,6 +249,20 @@ class DetalleAnuncio : AppCompatActivity() {
                         }
 
                         //Seteamos la información en las vistas
+                        binding.TvTipoInmueble.text = tipoInmueble
+                        binding.TvEstad.text = estado
+                        binding.TvEstracto.text = estracto
+                        binding.TvAreaConstruida.text = areaContruida
+                        binding.TvAreaTotal.text = areaTotal
+                        binding.TvDormitorios.text = dormitorios
+                        binding.TvBaOs.text = baños
+                        binding.TvEstacionamiento.text = estacionamiento
+                        binding.TvPiso.text = piso
+                        binding.TvAceptaMascotas.text = mascotas
+                        binding.TvIncluyeAdministracion.text = administración
+                        binding.TvDetallesContruccion.text = construcción
+                        binding.TvServicios.text = servicios
+                        binding.TvEstadoLegal.text = estadoLegal
                         binding.TvTitulo.text = titulo
                         binding.TvDescr.text = descripcion
                         binding.TvDireccion.text = direccion
@@ -275,13 +303,13 @@ class DetalleAnuncio : AppCompatActivity() {
             .updateChildren(hashMap)
             .addOnSuccessListener {
                 Toast.makeText(this,
-                    "El anuncio ha sido marcado como vendido",
+                    "El anuncio ha sido marcado como vendido/arrendado",
                     Toast.LENGTH_SHORT)
                     .show()
             }
             .addOnFailureListener {e->
                 Toast.makeText(this,
-                    "No se marcó como vendido debido a ${e.message}",
+                    "No se marcó como vendido/arrendado debido a ${e.message}",
                     Toast.LENGTH_SHORT)
                     .show()
             }

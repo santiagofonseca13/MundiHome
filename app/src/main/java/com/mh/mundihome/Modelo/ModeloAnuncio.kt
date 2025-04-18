@@ -6,7 +6,6 @@ class ModeloAnuncio {
     var uid : String = ""
     var categoria : String = ""
     var tipoInmueble : String = ""
-    var ciudad : String = ""
     var estracto : String = ""
     var areaContruida : String = ""
     var areaTotal : String = ""
@@ -38,7 +37,6 @@ class ModeloAnuncio {
         uid: String,
         categoria: String,
         tipoInmueble: String,
-        ciudad: String,
         estracto: String,
         areaContruida: String,
         areaTotal: String,
@@ -67,7 +65,6 @@ class ModeloAnuncio {
         this.uid = uid
         this.categoria = categoria
         this.tipoInmueble = tipoInmueble
-        this.ciudad = ciudad
         this.estracto = estracto
         this.areaContruida = areaContruida
         this.areaTotal = areaTotal
