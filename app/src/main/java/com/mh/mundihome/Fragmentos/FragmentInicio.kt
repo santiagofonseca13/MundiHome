@@ -35,7 +35,7 @@ class FragmentInicio : Fragment() {
 
 
     private companion object{
-        private const val MAX_DISTANCIA_MOSTRAR_ANUNCIO = 10
+        private const val MAX_DISTANCIA_MOSTRAR_ANUNCIO = 30
     }
 
     private lateinit var mContext : Context

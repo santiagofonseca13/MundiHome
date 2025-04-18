@@ -1,9 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.AppCompraYVenta" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.MundiHome" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <item name="colorPrimary">@color/mi_color</item>
     </style>
 
-    <style name="Theme.AppCompraYVenta" parent="Base.Theme.AppCompraYVenta" />
+    <style name="Theme.MundiHome" parent="Base.Theme.MundiHome" />
 </resources>

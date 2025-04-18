@@ -96,7 +96,7 @@
     <string name="Tv_descripcion">Descripción del producto, se podrá visualizar un máximo de 3 líneas</string>
     <string name="Tv_direccion">Dirección</string>
     <string name="Tv_condicion">Nuevo</string>
-    <string name="Tv_simbolo_precio">S/</string>
+    <string name="Tv_simbolo_precio">$/</string>
     <string name="Tv_precio">00</string>
     <string name="Tv_fecha">dd/MM/yyyy</string>
 
