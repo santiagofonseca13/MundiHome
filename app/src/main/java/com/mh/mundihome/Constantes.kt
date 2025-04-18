@@ -30,17 +30,28 @@ object Constantes {
 
     val categorias = arrayOf(
         "Todos",
-        "Móbiles",
-        "Ordenadores/Laptops",
-        "Electrónica y electrodomésticos",
-        "Vehículos",
-        "Consolas y videojuegos",
-        "Hogar y muebles",
-        "Belleza y cuidado personal",
-        "Libros",
-        "Deportes",
-        "Juguetes y figuras",
-        "Mascotas"
+        "Tipo Inmueble",
+        "Estracto",
+        "Dormitorios",
+        "Baños",
+        "Estacionamiento",
+        "Mascotas",
+        "Administracion",
+        "Precio",
+        "Area_Total"
+    )
+
+    val categoriasIcono = arrayOf(
+        R.drawable.ic_categoria_todos,
+        R.drawable.ic_categoria_tipo_inmueble,
+        R.drawable.ic_categoria_estracto,
+        R.drawable.ic_categoria_dormitorios,
+        R.drawable.ic_categoria_banos,
+        R.drawable.ic_categoria_estacionamiento,
+        R.drawable.ic_categoria_mascotas,
+        R.drawable.ic_categoria_administracion,
+        R.drawable.ic_categoria_precio,
+        R.drawable.ic_categoria_area_total,
     )
 
     val tipo_inmueble = arrayOf(
@@ -48,10 +59,6 @@ object Constantes {
         "Finca",
         "Casa",
         "Local comercial",
-    )
-
-    val ciudad = arrayOf(
-        "Zipaquira"
     )
 
     val estrato = arrayOf(
@@ -112,25 +119,6 @@ object Constantes {
         "N/A",
         "Si",
         "No"
-    )
-
-    val ubicacion = arrayOf(
-        "N/A"
-    )
-
-    val categoriasIcono = arrayOf(
-        R.drawable.ic_categoria_todos,
-        R.drawable.ic_categoria_mobiles,
-        R.drawable.ic_categoria_ordenadores,
-        R.drawable.ic_categoria_electrodomesticos,
-        R.drawable.ic_categoria_vehiculos,
-        R.drawable.ic_categoria_consolas,
-        R.drawable.ic_categoria_muebles,
-        R.drawable.ic_categoria_belleza,
-        R.drawable.ic_categoria_libros,
-        R.drawable.ic_categoria_deportes,
-        R.drawable.ic_categoria_juguetes,
-        R.drawable.ic_categoria_mascotas
     )
 
     fun obtenerTiempoDis() : Long{

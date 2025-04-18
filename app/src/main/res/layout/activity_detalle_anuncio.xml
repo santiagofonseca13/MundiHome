@@ -154,8 +154,8 @@
 
             <!--Txt-->
             <TextView
-                android:id="@+id/Txt_categoria"
-                android:text="@string/Txt_categoria"
+                android:id="@+id/Txt_filtros"
+                android:text="@string/Txt_filtros"
                 android:layout_below="@id/Tv_estado"
                 android:layout_marginTop="5dp"
                 android:textStyle="bold"
@@ -167,7 +167,7 @@
             <TextView
                 android:id="@+id/Tv_cat"
                 android:text="@string/Tv_cat"
-                android:layout_below="@+id/Txt_categoria"
+                android:layout_below="@+id/Txt_filtros"
                 android:layout_marginTop="5dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

@@ -55,7 +55,7 @@ class AdaptadorCategoria(
 
     inner class HolderCategoria(itemView : View) : ViewHolder(itemView){
         var categoriaIconoIv = binding.categoriaIconoIv
-        var categoriaTv = binding.TvCategoria
+        var categoriaTv = binding.TvFiltros
     }
 
 

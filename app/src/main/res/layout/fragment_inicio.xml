@@ -69,7 +69,7 @@
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     <TextView
-        android:text="@string/Txt_categoria"
+        android:text="@string/Txt_filtros"
         style="@style/TextAppearance.MaterialComponents.Overline"
         android:textStyle="bold"
         android:layout_marginStart="8dp"
