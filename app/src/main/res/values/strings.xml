@@ -68,10 +68,10 @@
     <string name="Area_Total">Area_Total: m2</string>
     <string name="Dormitorios">No Dormitorios</string>
     <string name="Baños">No Baños</string>
-    <string name="Estacionamiento">Estacionamiento Si/No</string>
+    <string name="Estacionamiento">Estacionamiento</string>
     <string name="Piso">No Piso</string>
-    <string name="Acepta_Mascotas">Acepta_Mascotas: Si/No</string>
-    <string name="Incluye_Administracion">Incluye_Administracion: Si/No</string>
+    <string name="Acepta_Mascotas">Acepta_Mascotas</string>
+    <string name="Incluye_Administracion">Incluye_Administracion</string>
     <string name="Detalles_Contruccion">Detalles_Contruccion/Materiales/Acabados/Pisos/etc</string>
     <string name="Servicios">Servicios: Ascensores/Areas Comunes/etc</string>
     <string name="EstadoLegal">EstadoLegal: Escritura/Matricula/etc</string>

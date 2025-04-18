@@ -56,7 +56,7 @@ class CrearAnuncio : AppCompatActivity() {
         val  adaptadorTipoInmueble = ArrayAdapter(this, R.layout.item_tipo_inmueble, Constantes.tipo_inmueble)
         binding.TipoInmueble.setAdapter(adaptadorTipoInmueble)
 
-        val  adaptadorEstrato = ArrayAdapter(this, R.layout.item_estracto, Constantes.estrato)
+        val  adaptadorEstrato = ArrayAdapter(this, R.layout.item_estracto, Constantes.estracto)
         binding.Estracto.setAdapter(adaptadorEstrato)
 
         val  adaptadorDormitorios = ArrayAdapter(this, R.layout.item_dormitorios, Constantes.dormitorios)

@@ -7,12 +7,14 @@ import android.content.SharedPreferences
 import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
+import com.google.android.material.button.MaterialButton
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.firebase.database.DataSnapshot
@@ -20,13 +22,18 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.mh.mundihome.Adaptadores.AdaptadorAnuncio
-import com.mh.mundihome.Adaptadores.AdaptadorCategoria
 import com.mh.mundihome.Constantes
+import com.mh.mundihome.Constantes.tipo_inmueble
+import com.mh.mundihome.Constantes.estracto
+import com.mh.mundihome.Constantes.dormitorios
+import com.mh.mundihome.Constantes.banos
+import com.mh.mundihome.Constantes.estacionamiento
+import com.mh.mundihome.Constantes.marcotas
+import com.mh.mundihome.Constantes.administracion
 import com.mh.mundihome.Modelo.ModeloAnuncio
-import com.mh.mundihome.Modelo.ModeloCategoria
-import com.mh.mundihome.RvListenerCategoria
 import com.mh.mundihome.SeleccionarUbicacion
 import com.mh.mundihome.databinding.FragmentInicioBinding
+import kotlin.text.compareTo
 
 
 class FragmentInicio : Fragment() {
@@ -47,6 +54,8 @@ class FragmentInicio : Fragment() {
     private var actualLatitud = 0.0
     private var actualLongitud = 0.0
     private var actualDireccion = ""
+
+    private val filtrosSeleccionados = mutableMapOf<String, String?>()
 
     override fun onAttach(context: Context) {
         mContext = context
@@ -72,8 +81,7 @@ class FragmentInicio : Fragment() {
             binding.TvLocacion.text = actualDireccion
         }
 
-        cargarCategorias()
-        cargarAnuncios("Todos")
+        cargarAnuncios()
 
         binding.TvLocacion.setOnClickListener {
             val intent = Intent(mContext, SeleccionarUbicacion::class.java)
@@ -109,6 +117,33 @@ class FragmentInicio : Fragment() {
             }
         }
 
+        binding.btnTipoInmueble.setOnClickListener { mostrarPopupMenu(it, tipo_inmueble, "tipo_inmueble") }
+        binding.btnEstrato.setOnClickListener { mostrarPopupMenu(it, estracto, "estracto") }
+        binding.btnDormitorios.setOnClickListener { mostrarPopupMenu(it, dormitorios, "dormitorios") }
+        binding.btnBanos.setOnClickListener { mostrarPopupMenu(it, banos, "banos") }
+        binding.btnEstacionamiento.setOnClickListener { mostrarPopupMenu(it, estacionamiento, "estacionamiento") }
+        binding.btnMarcotas.setOnClickListener { mostrarPopupMenu(it, marcotas, "marcotas") }
+        binding.btnAdministracion.setOnClickListener { mostrarPopupMenu(it, administracion, "administracion") }
+
+    }
+
+    private fun mostrarPopupMenu(view: View, opciones: Array<String>, filtroKey: String) {
+        val popupMenu = PopupMenu(requireContext(), view)
+        for ((index, opcion) in opciones.withIndex()) {
+            popupMenu.menu.add(0, index, index, opcion)
+        }
+
+        popupMenu.setOnMenuItemClickListener { menuItem ->
+            val selectedOption = opciones[menuItem.itemId]
+            (view as? MaterialButton)?.text = "$filtroKey: $selectedOption"
+
+            filtrosSeleccionados[filtroKey] = if (selectedOption != "N/A") selectedOption else null
+
+            cargarAnuncios()
+
+            true
+        }
+        popupMenu.show()
     }
 
     private val seleccionarUbicacionARL = registerForActivityResult(
@@ -128,7 +163,7 @@ class FragmentInicio : Fragment() {
 
                 binding.TvLocacion.text = actualDireccion
 
-                cargarAnuncios("Todos")
+                cargarAnuncios()
             }else{
                 Toast.makeText(
                     context, "Cancelado",Toast.LENGTH_SHORT
@@ -137,28 +172,7 @@ class FragmentInicio : Fragment() {
         }
     }
 
-    private fun cargarCategorias(){
-        val categoriaArrayList = ArrayList<ModeloCategoria>()
-        for (i in 0 until Constantes.categorias.size){
-            val modeloCategoria = ModeloCategoria(Constantes.categorias[i], Constantes.categoriasIcono[i])
-            categoriaArrayList.add(modeloCategoria)
-        }
-
-        val adaptadorCategoria = AdaptadorCategoria(
-            mContext,
-            categoriaArrayList,
-            object : RvListenerCategoria{
-                override fun onCategoriaClick(modeloCategoria: ModeloCategoria) {
-                    val categoriaSeleccionada = modeloCategoria.categoria
-                    cargarAnuncios(categoriaSeleccionada)
-                }
-            }
-        )
-
-        binding.categoriaRv.adapter = adaptadorCategoria
-    }
-
-    private fun cargarAnuncios(categoria : String){
+    private fun cargarAnuncios(){
         anuncioArrayList = ArrayList()
 
         val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
@@ -172,17 +186,25 @@ class FragmentInicio : Fragment() {
                             modeloAnuncio?.latitud ?: 0.0,
                             modeloAnuncio?.longitud ?: 0.0
                         )
-                        if (categoria == "Todos"){
-                            if (distancia <= MAX_DISTANCIA_MOSTRAR_ANUNCIO){
-                                anuncioArrayList.add(modeloAnuncio!!)
-                            }
-                        }else{
-                            if (modeloAnuncio!!.categoria.equals(categoria)){
-                                if (distancia <= MAX_DISTANCIA_MOSTRAR_ANUNCIO){
-                                    anuncioArrayList.add(modeloAnuncio)
+
+                        val cumpleFiltros = distancia <= MAX_DISTANCIA_MOSTRAR_ANUNCIO  &&
+                                filtrosSeleccionados.all { (filtroKey, filtroValor) ->
+                                    when (filtroKey) {
+                                        "tipo_inmueble" -> filtroValor == null || modeloAnuncio?.tipoInmueble.toString() == filtroValor
+                                        "estrato" -> filtroValor == null || modeloAnuncio?.estracto.toString() == filtroValor
+                                        "dormitorios" -> filtroValor == null || modeloAnuncio?.dormitorios.toString() == filtroValor
+                                        "banos" -> filtroValor == null || modeloAnuncio?.baños.toString() == filtroValor
+                                        "estacionamiento" -> filtroValor == null || modeloAnuncio?.estacionamiento.toString() == filtroValor
+                                        "mascotas" -> filtroValor == null || modeloAnuncio?.mascotas.toString() == filtroValor
+                                        "administracion" -> filtroValor == null || modeloAnuncio?.administración.toString() == filtroValor
+
+                                        else -> true
+                                    }
                                 }
-                            }
+                        if (cumpleFiltros) {
+                            modeloAnuncio?.let { anuncioArrayList.add(it) }
                         }
+
                     }catch (e:Exception){
 
                     }

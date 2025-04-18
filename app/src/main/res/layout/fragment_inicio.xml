@@ -76,15 +76,69 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <!--Lista de categorias-->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/categoriaRv"
-        tools:listitem="@layout/item_categoria_inicio"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal"
+    <HorizontalScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/layout"
+            android:layout_marginTop="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTipoInmueble"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:text="@string/Tipo_Inmueble"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEstrato"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:text="@string/Estracto"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDormitorios"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:text="@string/Dormitorios"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBanos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:text="@string/Baños"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnEstacionamiento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:text="@string/Estacionamiento"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnMarcotas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:text="@string/Acepta_Mascotas"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAdministracion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:text="@string/Incluye_Administracion"/>
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <!--Lista de anuncios-->
     <androidx.recyclerview.widget.RecyclerView
