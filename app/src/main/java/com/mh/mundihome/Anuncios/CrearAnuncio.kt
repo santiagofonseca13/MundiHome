@@ -56,9 +56,6 @@ class CrearAnuncio : AppCompatActivity() {
         val  adaptadorTipoInmueble = ArrayAdapter(this, R.layout.item_tipo_inmueble, Constantes.tipo_inmueble)
         binding.TipoInmueble.setAdapter(adaptadorTipoInmueble)
 
-        val  adaptadorCiudad = ArrayAdapter(this, R.layout.item_ciudad, Constantes.ciudad)
-        binding.Ciudad.setAdapter(adaptadorCiudad)
-
         val  adaptadorEstrato = ArrayAdapter(this, R.layout.item_estracto, Constantes.estrato)
         binding.Estracto.setAdapter(adaptadorEstrato)
 
@@ -115,9 +112,20 @@ class CrearAnuncio : AppCompatActivity() {
             .addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     /*Obtener de la BD la información del anuncio*/
-                    val marca = "${snapshot.child("marca").value}"
-                    val categoria = "${snapshot.child("categoria").value}"
-                    val condicion = "${snapshot.child("condicion").value}"
+                    val tipoInmueble = "${snapshot.child("tipoInmueble").value}"
+                    val dormitorios = "${snapshot.child("dormitorios").value}"
+                    val estado = "${snapshot.child("estado").value}"
+                    val estracto = "${snapshot.child("estracto").value}"
+                    val areaConstruida = "${snapshot.child("areaConstruida").value}"
+                    val areaTotal = "${snapshot.child("areaTotal").value}"
+                    val banos = "${snapshot.child("banos").value}"
+                    val estacionamiento = "${snapshot.child("estacionamiento").value}"
+                    val piso = "${snapshot.child("piso").value}"
+                    val mascotas = "${snapshot.child("mascotas").value}"
+                    val administracion = "${snapshot.child("administracion").value}"
+                    val contruccion = "${snapshot.child("contruccion").value}"
+                    val servicios = "${snapshot.child("servicios").value}"
+                    val estadoLegal = "${snapshot.child("estadoLegal").value}"
                     val locacion = "${snapshot.child("direccion").value}"
                     val precio = "${snapshot.child("precio").value}"
                     val titulo ="${snapshot.child("titulo").value}"
@@ -126,10 +134,25 @@ class CrearAnuncio : AppCompatActivity() {
                     longitud = (snapshot.child("longitud").value) as Double
 
                     /*Setear la información en las vistas*/
+                    binding.Locacion.setText("")
+                    binding.EtPrecio.setText("")
+                    binding.EtTitulo.setText("")
+                    binding.EtDescripcion.setText("")
+                    binding.TipoInmueble.setText("")
+                    binding.Estado.setText("")
+                    binding.Estracto.setText("")
+                    binding.AreaConstruida.setText("")
+                    binding.AreaTotal.setText("")
+                    binding.Dormitorios.setText("")
+                    binding.BaOs.setText("")
+                    binding.Estacionamiento.setText("")
+                    binding.Piso.setText("")
+                    binding.AceptaMascotas.setText("")
+                    binding.IncluyeAdministracion.setText("")
+                    binding.DetallesContruccion.setText("")
+                    binding.Servicios.setText("")
+                    binding.EstadoLegal.setText("")
                     binding.Locacion.setText(locacion)
-                    binding.EtPrecio.setText(precio)
-                    binding.EtTitulo.setText(titulo)
-                    binding.EtDescripcion.setText(descripcion)
 
                     val refImagenes = snapshot.child("Imagenes").ref
                     refImagenes.addListenerForSingleValueEvent(object : ValueEventListener{
@@ -172,7 +195,6 @@ class CrearAnuncio : AppCompatActivity() {
     private var construccion =""
     private var servicios =""
     private var estadoLegal =""
-    private var condicion = ""
     private var direccion = ""
     private var precio = ""
     private var titulo = ""
@@ -181,7 +203,6 @@ class CrearAnuncio : AppCompatActivity() {
     private var longitud = 0.0
     private fun validarDatos(){
         tipoInmueble = binding.TipoInmueble.text.toString().trim()
-        ciudad = binding.Ciudad.text.toString().trim()
         estado = binding.Estado.text.toString().trim()
         estracto = binding.Estracto.text.toString().trim()
         areaConstruida = binding.AreaConstruida.text.toString().trim()
@@ -203,10 +224,6 @@ class CrearAnuncio : AppCompatActivity() {
         if (tipoInmueble.isEmpty()){
             binding.TipoInmueble.error = "Seleccione el tipo de inmueble"
             binding.TipoInmueble.requestFocus()
-        }
-        else if (ciudad.isEmpty()) {
-            binding.Ciudad.error = "Seleccione la ciudad"
-            binding.Ciudad.requestFocus()
         }
         else if (estado.isEmpty()) {
             binding.Estado.error = "Seleccione el estado"
@@ -316,7 +333,6 @@ class CrearAnuncio : AppCompatActivity() {
         hashMap["construcción"] = "${construccion}"
         hashMap["servicios"] = "${servicios}"
         hashMap["estadoLegal"] = "${estadoLegal}"
-        hashMap["condicion"] = "${condicion}"
         hashMap["titulo"] = "${titulo}"
         hashMap["latitud"] = latitud
         hashMap["longitud"] = longitud
@@ -363,7 +379,6 @@ class CrearAnuncio : AppCompatActivity() {
         hashMap["id"] = "${keyId}"
         hashMap["uid"] = "${firebaseAuth.uid}"
         hashMap["tipoInmueble"] = "${tipoInmueble}"
-        hashMap["ciudad"] = "${ciudad}"
         hashMap["direccion"] = "${direccion}"
         hashMap["estado"] = "${Constantes.anuncio_disponible}"
         hashMap["estracto"] = "${estracto}"
@@ -380,7 +395,6 @@ class CrearAnuncio : AppCompatActivity() {
         hashMap["construcción"] = "${construccion}"
         hashMap["servicios"] = "${servicios}"
         hashMap["estadoLegal"] = "${estadoLegal}"
-        hashMap["condicion"] = "${condicion}"
         hashMap["titulo"] = "${titulo}"
         hashMap["estado"] = "${Constantes.anuncio_disponible}"
         hashMap["tiempo"] = tiempo
@@ -460,7 +474,6 @@ class CrearAnuncio : AppCompatActivity() {
         binding.EtTitulo.setText("")
         binding.EtDescripcion.setText("")
         binding.TipoInmueble.setText("")
-        binding.Ciudad.setText("")
         binding.Estado.setText("")
         binding.Estracto.setText("")
         binding.AreaConstruida.setText("")

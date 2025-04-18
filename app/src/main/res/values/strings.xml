@@ -62,7 +62,6 @@
 
     <!--Crear anuncio-->
     <string name="Tipo_Inmueble">Tipo Inmueble</string>
-    <string name="Ciudad">Ciudad</string>
     <string name="Estado">Estado: Nuevo/Usado/EnConstruccion</string>
     <string name="Estracto">Estracto</string>
     <string name="Area_Construida">Area_Construida: m2</string>
@@ -100,6 +99,37 @@
     <string name="Tv_simbolo_precio">S/</string>
     <string name="Tv_precio">00</string>
     <string name="Tv_fecha">dd/MM/yyyy</string>
+
+    <string name="Txt_Tipo_Inmueble">Tipo Inmueble</string>
+    <string name="Txt_Estad">Estado: Nuevo/Usado/EnConstruccion</string>
+    <string name="Txt_Estracto">Estracto</string>
+    <string name="Txt_Area_Construida">Area_Construida: m2</string>
+    <string name="Txt_Area_Total">Area_Total: m2</string>
+    <string name="Txt_Dormitorios">No Dormitorios</string>
+    <string name="Txt_Baños">No Baños</string>
+    <string name="Txt_Estacionamiento">Hay Estacionamiento</string>
+    <string name="Txt_Piso">No Piso</string>
+    <string name="Txt_Acepta_Mascotas">Acepta_Mascotas</string>
+    <string name="Txt_Incluye_Administracion">Incluye_Administracion</string>
+    <string name="Txt_Detalles_Contruccion">Detalles_Contruccion</string>
+    <string name="Txt_Servicios">Servicios</string>
+    <string name="Txt_EstadoLegal">EstadoLegal</string>
+
+    <string name="Tv_Tipo_Inmueble">Tipo Inmueble "Casa, Apartamento, Finca, etc."</string>
+    <string name="Tv_Estad">Nuevo/Usado/EnConstruccion</string>
+    <string name="Tv_Estracto">N/A</string>
+    <string name="Tv_Area_Construida">0 m2</string>
+    <string name="Tv_Area_Total">0 m2</string>
+    <string name="Tv_Dormitorios">N/A</string>
+    <string name="Tv_Baños">N/A</string>
+    <string name="Tv_Estacionamiento">N/A</string>
+    <string name="Tv_Piso">N/A</string>
+    <string name="Tv_Acepta_Mascotas">N/A</string>
+    <string name="Tv_Incluye_Administracion">N/A</string>
+    <string name="Tv_Detalles_Contruccion">Materiales/Acabados/Pisos/etc</string>
+    <string name="Tv_Servicios">Ascensores/Areas Comunes/etc</string>
+    <string name="Tv_EstadoLegal">Escritura/Matricula/etc</string>
+
 
     <string name="Txt_detalle_info">Detalle del anuncio</string>
     <string name="Tv_cat">Categoría del anuncio</string>

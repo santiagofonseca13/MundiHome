@@ -232,12 +232,292 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
+            <!--Tipo_Inmueble-->
+            <TextView
+                android:id="@+id/Tv_Tipo_Inmueble"
+                android:text="@string/Tv_Tipo_Inmueble"
+                android:layout_below="@id/Txt_Tipo_Inmueble"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_Tipo_Inmueble"
+                android:text="@string/Txt_Tipo_Inmueble"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/Tv_direccion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Estado-->
+            <TextView
+                android:id="@+id/Tv_Estad"
+                android:text="@string/Tv_Estad"
+                android:layout_below="@id/Txt_Estad"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_Estad"
+                android:text="@string/Txt_Estad"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/Tv_Tipo_Inmueble"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Estracto-->
+            <TextView
+                android:id="@+id/Tv_Estracto"
+                android:text="@string/Tv_Estracto"
+                android:layout_below="@id/Txt_Estracto"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_Estracto"
+                android:text="@string/Txt_Estracto"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/Tv_Estad"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Area_Construida-->
+            <TextView
+                android:id="@+id/Tv_Area_Construida"
+                android:text="@string/Tv_Area_Construida"
+                android:layout_below="@id/Txt_Area_Construida"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_Area_Construida"
+                android:text="@string/Txt_Area_Construida"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/Tv_Estracto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Area_Total-->
+            <TextView
+                android:id="@+id/Tv_Area_Total"
+                android:text="@string/Tv_Area_Total"
+                android:layout_below="@id/Txt_Area_Total"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_Area_Total"
+                android:text="@string/Txt_Area_Total"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/Tv_Area_Construida"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Dormitorios-->
+            <TextView
+                android:id="@+id/Tv_Dormitorios"
+                android:text="@string/Tv_Dormitorios"
+                android:layout_below="@id/Txt_Dormitorios"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_Dormitorios"
+                android:text="@string/Txt_Dormitorios"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/Tv_Area_Total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Baños-->
+            <TextView
+                android:id="@+id/Tv_Baños"
+                android:text="@string/Tv_Baños"
+                android:layout_below="@id/Txt_Baños"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_Baños"
+                android:text="@string/Txt_Baños"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/Tv_Dormitorios"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Estacionamiento-->
+            <TextView
+                android:id="@+id/Tv_Estacionamiento"
+                android:text="@string/Tv_Estacionamiento"
+                android:layout_below="@id/Txt_Estacionamiento"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_Estacionamiento"
+                android:text="@string/Txt_Estacionamiento"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/Tv_Baños"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Piso-->
+            <TextView
+                android:id="@+id/Tv_Piso"
+                android:text="@string/Tv_Piso"
+                android:layout_below="@id/Txt_Piso"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_Piso"
+                android:text="@string/Txt_Piso"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/Tv_Estacionamiento"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Acepta_Mascotas-->
+            <TextView
+                android:id="@+id/Tv_Acepta_Mascotas"
+                android:text="@string/Tv_Acepta_Mascotas"
+                android:layout_below="@id/Txt_Acepta_Mascotas"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_Acepta_Mascotas"
+                android:text="@string/Txt_Acepta_Mascotas"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/Tv_Piso"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Incluye_Administracion-->
+            <TextView
+                android:id="@+id/Tv_Incluye_Administracion"
+                android:text="@string/Tv_Incluye_Administracion"
+                android:layout_below="@id/Txt_Incluye_Administracion"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_Incluye_Administracion"
+                android:text="@string/Txt_Incluye_Administracion"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/Tv_Acepta_Mascotas"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Detalles_Contruccion-->
+            <TextView
+                android:id="@+id/Tv_Detalles_Contruccion"
+                android:text="@string/Tv_Detalles_Contruccion"
+                android:layout_below="@id/Txt_Detalles_Contruccion"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_Detalles_Contruccion"
+                android:text="@string/Txt_Detalles_Contruccion"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/Tv_Incluye_Administracion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Servicios-->
+            <TextView
+                android:id="@+id/Tv_Servicios"
+                android:text="@string/Tv_Servicios"
+                android:layout_below="@id/Txt_Servicios"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_Servicios"
+                android:text="@string/Txt_Servicios"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/Tv_Detalles_Contruccion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--EstadoLegal-->
+            <TextView
+                android:id="@+id/Tv_EstadoLegal"
+                android:text="@string/Tv_EstadoLegal"
+                android:layout_below="@id/Txt_EstadoLegal"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <!--Txt-->
+            <TextView
+                android:id="@+id/Txt_EstadoLegal"
+                android:text="@string/Txt_EstadoLegal"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:layout_marginTop="5dp"
+                android:layout_below="@+id/Tv_Servicios"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
             <!--Txt-->
             <TextView
                 android:id="@+id/Txt_vistas"
                 android:text="@string/Txt_vistas"
                 android:textStyle="bold"
-                android:layout_below="@id/Tv_direccion"
+                android:layout_below="@id/Tv_EstadoLegal"
                 android:textSize="18sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
