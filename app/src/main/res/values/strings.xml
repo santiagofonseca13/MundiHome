@@ -2,11 +2,11 @@
     <string name="app_name">Mundi Home</string>
 
     <string name="mi_google_maps_api_key">AIzaSyD10DKZ_zOLTYB7cDM_vgYdsA9RftE-aQ8</string>
-    <string name="default_web_client_id">Copias aqui tu client id</string>
+    <string name="default_web_client_id">562623807971-s7029b3b4bgj32dc4h88ddnk3rqs5607.apps.googleusercontent.com</string>
 
     <string name="Item_Inicio">Inicio</string>
     <string name="Item_Chats">Chats</string>
-    <string name="Item_vender">Vender</string>
+    <string name="Item_vender">Publicar</string>
     <string name="Item_Mis_Anuncios">Anuncios</string>
     <string name="Item_Cuenta">Cuenta</string>
 
