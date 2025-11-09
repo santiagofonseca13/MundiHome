@@ -40,9 +40,7 @@ android {
     }
 
     packaging {
-        resources {
-            excludes.add("META-INF/DEPENDENCIES")
-        }
+        resources.excludes.add("META-INF/DEPENDENCIES")
     }
 
 }
@@ -75,7 +73,6 @@ dependencies {
     implementation ("com.google.firebase:firebase-messaging-ktx:23.3.1")
     implementation ("de.hdodenhof:circleimageview:3.1.0")
     implementation ("com.android.volley:volley:1.2.1")
-    implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
     implementation("com.google.auth:google-auth-library-oauth2-http:1.19.0")
     implementation("com.google.api-client:google-api-client-android:2.8.1")
