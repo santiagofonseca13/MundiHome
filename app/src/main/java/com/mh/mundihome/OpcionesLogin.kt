@@ -111,8 +111,12 @@ class OpcionesLogin : AppCompatActivity() {
     }
 
     private fun googleLogin() {
-        val googleSignInIntent = mGoogleSignInClient.signInIntent
-        googleSignInARL.launch(googleSignInIntent)
+        mGoogleSignInClient.signOut().addOnCompleteListener {
+            mGoogleSignInClient.revokeAccess().addOnCompleteListener {
+                val googleSignInIntent = mGoogleSignInClient.signInIntent
+                googleSignInARL.launch(googleSignInIntent)
+            }
+        }
     }
 
     private val googleSignInARL = registerForActivityResult(
