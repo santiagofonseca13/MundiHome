@@ -140,6 +140,40 @@
         </LinearLayout>
     </HorizontalScrollView>
 
+    <!-- Control de distancia -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="5dp"
+        app:cardUseCompatPadding="true"
+        app:contentPadding="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvDistanciaActual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="Radio de búsqueda: 50 km"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sliderDistancia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:valueFrom="1"
+                android:valueTo="400"
+                android:value="50"
+                android:stepSize="1"/>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
     <!--Lista de anuncios-->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/anunciosRv"

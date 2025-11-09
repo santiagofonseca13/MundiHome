@@ -41,11 +41,8 @@ class FragmentInicio : Fragment() {
     private lateinit var binding : FragmentInicioBinding
 
 
-    private companion object{
-        private const val MAX_DISTANCIA_MOSTRAR_ANUNCIO = 50
-    }
-
     private lateinit var mContext : Context
+    private var distanciaSeleccionada: Double = 50.0 // Por defecto, 50 km
 
     private lateinit var anuncioArrayList : ArrayList<ModeloAnuncio>
     private lateinit var adaptadorAnuncio : AdaptadorAnuncio
@@ -76,6 +73,11 @@ class FragmentInicio : Fragment() {
         actualLatitud = locacionSP.getFloat("ACTUAL_LATITUD", 0.0f).toDouble()
         actualLongitud = locacionSP.getFloat("ACTUAL_LONGITUD", 0.0f).toDouble()
         actualDireccion = locacionSP.getString("ACTUAL_DIRECCION", "")!!
+        distanciaSeleccionada = locacionSP.getFloat("DISTANCIA_PREFERIDA", 50f).toDouble()
+
+        // Actualizar el valor inicial del slider y el texto
+        binding.sliderDistancia.value = distanciaSeleccionada.toFloat()
+        binding.tvDistanciaActual.text = "Radio de búsqueda: ${distanciaSeleccionada.toInt()} km"
 
         if (actualLatitud != 0.0 && actualLongitud !=0.0){
             binding.TvLocacion.text = actualDireccion
@@ -124,6 +126,23 @@ class FragmentInicio : Fragment() {
         binding.btnEstacionamiento.setOnClickListener { mostrarPopupMenu(it, estacionamiento, "estacionamiento") }
         binding.btnMarcotas.setOnClickListener { mostrarPopupMenu(it, marcotas, "marcotas") }
         binding.btnAdministracion.setOnClickListener { mostrarPopupMenu(it, administracion, "administracion") }
+
+        // Configurar el Slider de distancia
+        binding.sliderDistancia.apply {
+            value = distanciaSeleccionada.toFloat()
+            addOnChangeListener { slider, value, fromUser ->
+                distanciaSeleccionada = value.toDouble()
+                binding.tvDistanciaActual.text = "Radio de búsqueda: ${value.toInt()} km"
+                if (fromUser) {
+                    // Guardar preferencia
+                    locacionSP.edit()
+                        .putFloat("DISTANCIA_PREFERIDA", value)
+                        .apply()
+                    // Recargar anuncios con nueva distancia
+                    cargarAnuncios()
+                }
+            }
+        }
 
     }
 
@@ -187,20 +206,27 @@ class FragmentInicio : Fragment() {
                             modeloAnuncio?.longitud ?: 0.0
                         )
 
-                        val cumpleFiltros = distancia <= MAX_DISTANCIA_MOSTRAR_ANUNCIO  &&
-                                filtrosSeleccionados.all { (filtroKey, filtroValor) ->
-                                    when (filtroKey) {
-                                        "tipo_inmueble" -> filtroValor == null || modeloAnuncio?.tipoInmueble.toString() == filtroValor
-                                        "estrato" -> filtroValor == null || modeloAnuncio?.estracto.toString() == filtroValor
-                                        "dormitorios" -> filtroValor == null || modeloAnuncio?.dormitorios.toString() == filtroValor
-                                        "banos" -> filtroValor == null || modeloAnuncio?.baños.toString() == filtroValor
-                                        "estacionamiento" -> filtroValor == null || modeloAnuncio?.estacionamiento.toString() == filtroValor
-                                        "mascotas" -> filtroValor == null || modeloAnuncio?.mascotas.toString() == filtroValor
-                                        "administracion" -> filtroValor == null || modeloAnuncio?.administración.toString() == filtroValor
+                        // Aplicar filtro de distancia si hay ubicación establecida
+                        val hayUbicacion = actualLatitud != 0.0 && actualLongitud != 0.0
+                        val cumpleDistancia = if (!hayUbicacion) true else distancia <= distanciaSeleccionada
 
-                                        else -> true
-                                    }
-                                }
+                        // Verificar otros filtros solo si hay alguno seleccionado
+                        val filtrosVacios = filtrosSeleccionados.isEmpty()
+                        val cumpleFiltrosSeleccion = filtrosVacios || filtrosSeleccionados.all { (filtroKey, filtroValor) ->
+                            when (filtroKey) {
+                                "tipo_inmueble" -> filtroValor == null || modeloAnuncio?.tipoInmueble.toString() == filtroValor
+                                "estrato" -> filtroValor == null || modeloAnuncio?.estracto.toString() == filtroValor
+                                "dormitorios" -> filtroValor == null || modeloAnuncio?.dormitorios.toString() == filtroValor
+                                "banos" -> filtroValor == null || modeloAnuncio?.baños.toString() == filtroValor
+                                "estacionamiento" -> filtroValor == null || modeloAnuncio?.estacionamiento.toString() == filtroValor
+                                "mascotas" -> filtroValor == null || modeloAnuncio?.mascotas.toString() == filtroValor
+                                "administracion" -> filtroValor == null || modeloAnuncio?.administración.toString() == filtroValor
+                                else -> true
+                            }
+                        }
+
+                        val cumpleFiltros = cumpleDistancia && cumpleFiltrosSeleccion
+
                         if (cumpleFiltros) {
                             modeloAnuncio?.let { anuncioArrayList.add(it) }
                         }

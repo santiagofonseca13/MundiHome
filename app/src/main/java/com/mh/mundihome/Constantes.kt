@@ -95,6 +95,26 @@ object Constantes {
         "No"
     )
 
+    val distancias = arrayOf(
+        "Todas las ubicaciones",
+        "5 km",
+        "10 km",
+        "25 km",
+        "50 km",
+        "100 km"
+    )
+
+    fun obtenerDistanciaKm(opcion: String): Double {
+        return when(opcion) {
+            "5 km" -> 5.0
+            "10 km" -> 10.0
+            "25 km" -> 25.0
+            "50 km" -> 50.0
+            "100 km" -> 100.0
+            else -> Double.MAX_VALUE
+        }
+    }
+
     fun obtenerTiempoDis() : Long{
         return System.currentTimeMillis()
     }
