@@ -41,6 +41,15 @@ class CrearAnuncio : AppCompatActivity() {
 
     private var Edicion = false
     private var idAnuncioEditar = ""
+    
+    // Adaptadores para los campos de selección
+    private lateinit var adaptadorTipoInmueble: ArrayAdapter<String>
+    private lateinit var adaptadorEstracto: ArrayAdapter<String>
+    private lateinit var adaptadorDormitorios: ArrayAdapter<String>
+    private lateinit var adaptadorBanos: ArrayAdapter<String>
+    private lateinit var adaptadorEstacionamiento: ArrayAdapter<String>
+    private lateinit var adaptadorMascotas: ArrayAdapter<String>
+    private lateinit var adaptadorAdministracion: ArrayAdapter<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,25 +62,22 @@ class CrearAnuncio : AppCompatActivity() {
         progressDialog.setTitle("Espere por favor")
         progressDialog.setCanceledOnTouchOutside(false)
 
-        val  adaptadorTipoInmueble = ArrayAdapter(this, R.layout.item_tipo_inmueble, Constantes.tipo_inmueble)
+        // Inicializar adaptadores
+        adaptadorTipoInmueble = ArrayAdapter(this, R.layout.item_tipo_inmueble, Constantes.tipo_inmueble)
+        adaptadorEstracto = ArrayAdapter(this, R.layout.item_estracto, Constantes.estracto)
+        adaptadorDormitorios = ArrayAdapter(this, R.layout.item_dormitorios, Constantes.dormitorios)
+        adaptadorBanos = ArrayAdapter(this, R.layout.item_banos, Constantes.banos)
+        adaptadorEstacionamiento = ArrayAdapter(this, R.layout.item_estacionamiento, Constantes.estacionamiento)
+        adaptadorMascotas = ArrayAdapter(this, R.layout.item_mascotas, Constantes.marcotas)
+        adaptadorAdministracion = ArrayAdapter(this, R.layout.item_administracion, Constantes.administracion)
+
+        // Asignar adaptadores
         binding.TipoInmueble.setAdapter(adaptadorTipoInmueble)
-
-        val  adaptadorEstrato = ArrayAdapter(this, R.layout.item_estracto, Constantes.estracto)
-        binding.Estracto.setAdapter(adaptadorEstrato)
-
-        val  adaptadorDormitorios = ArrayAdapter(this, R.layout.item_dormitorios, Constantes.dormitorios)
+        binding.Estracto.setAdapter(adaptadorEstracto)
         binding.Dormitorios.setAdapter(adaptadorDormitorios)
-
-        val  adaptadorBaños = ArrayAdapter(this, R.layout.item_banos, Constantes.banos)
-        binding.BaOs.setAdapter(adaptadorBaños)
-
-        val  adaptadorEstacionamiento = ArrayAdapter(this, R.layout.item_estacionamiento, Constantes.estacionamiento)
+        binding.BaOs.setAdapter(adaptadorBanos)
         binding.Estacionamiento.setAdapter(adaptadorEstacionamiento)
-
-        val  adaptadorMascotas = ArrayAdapter(this, R.layout.item_mascotas, Constantes.marcotas)
         binding.AceptaMascotas.setAdapter(adaptadorMascotas)
-
-        val  adaptadorAdministracion = ArrayAdapter(this, R.layout.item_administracion, Constantes.administracion)
         binding.IncluyeAdministracion.setAdapter(adaptadorAdministracion)
 
         Edicion = intent.getBooleanExtra("Edicion", false)
@@ -118,40 +124,40 @@ class CrearAnuncio : AppCompatActivity() {
                     val estracto = "${snapshot.child("estracto").value}"
                     val areaConstruida = "${snapshot.child("areaConstruida").value}"
                     val areaTotal = "${snapshot.child("areaTotal").value}"
-                    val banos = "${snapshot.child("banos").value}"
+                    val banos = "${snapshot.child("baños").value}" // Corregido el nombre del campo
                     val estacionamiento = "${snapshot.child("estacionamiento").value}"
                     val piso = "${snapshot.child("piso").value}"
                     val mascotas = "${snapshot.child("mascotas").value}"
-                    val administracion = "${snapshot.child("administracion").value}"
-                    val contruccion = "${snapshot.child("contruccion").value}"
+                    val administracion = "${snapshot.child("administración").value}" // Corregido el nombre del campo
+                    val construccion = "${snapshot.child("construcción").value}" // Corregido el nombre del campo
                     val servicios = "${snapshot.child("servicios").value}"
                     val estadoLegal = "${snapshot.child("estadoLegal").value}"
                     val locacion = "${snapshot.child("direccion").value}"
                     val precio = "${snapshot.child("precio").value}"
                     val titulo ="${snapshot.child("titulo").value}"
-                    val descripcion = "${snapshot.child("descripcion").value}"
+                    val descripcion = "${snapshot.child("descripción").value}" // Corregido el nombre del campo
                     latitud = (snapshot.child("latitud").value) as Double
                     longitud = (snapshot.child("longitud").value) as Double
 
                     /*Setear la información en las vistas*/
-                    binding.Locacion.setText("")
-                    binding.EtPrecio.setText("")
-                    binding.EtTitulo.setText("")
-                    binding.EtDescripcion.setText("")
-                    binding.TipoInmueble.setText("")
-                    binding.Estado.setText("")
-                    binding.Estracto.setText("")
-                    binding.AreaConstruida.setText("")
-                    binding.AreaTotal.setText("")
-                    binding.Dormitorios.setText("")
-                    binding.BaOs.setText("")
-                    binding.Estacionamiento.setText("")
-                    binding.Piso.setText("")
-                    binding.AceptaMascotas.setText("")
-                    binding.IncluyeAdministracion.setText("")
-                    binding.DetallesContruccion.setText("")
-                    binding.Servicios.setText("")
-                    binding.EstadoLegal.setText("")
+                    binding.Locacion.setText(locacion)
+                    binding.EtPrecio.setText(precio)
+                    binding.EtTitulo.setText(titulo)
+                    binding.EtDescripcion.setText(descripcion)
+                    // Establecer valores en los campos manteniendo la funcionalidad de selección
+                    binding.TipoInmueble.setText(tipoInmueble, false)
+                    binding.Estracto.setText(estracto, false)
+                    binding.AreaConstruida.setText(areaConstruida)
+                    binding.AreaTotal.setText(areaTotal)
+                    binding.Dormitorios.setText(dormitorios, false)
+                    binding.BaOs.setText(banos, false)
+                    binding.Estacionamiento.setText(estacionamiento, false)
+                    binding.Piso.setText(piso)
+                    binding.AceptaMascotas.setText(mascotas, false)
+                    binding.IncluyeAdministracion.setText(administracion, false)
+                    binding.DetallesContruccion.setText(construccion)
+                    binding.Servicios.setText(servicios)
+                    binding.EstadoLegal.setText(estadoLegal)
                     binding.Locacion.setText(locacion)
 
                     val refImagenes = snapshot.child("Imagenes").ref
@@ -203,7 +209,7 @@ class CrearAnuncio : AppCompatActivity() {
     private var longitud = 0.0
     private fun validarDatos(){
         tipoInmueble = binding.TipoInmueble.text.toString().trim()
-        estado = binding.Estado.text.toString().trim()
+        estado = Constantes.anuncio_disponible
         estracto = binding.Estracto.text.toString().trim()
         areaConstruida = binding.AreaConstruida.text.toString().trim()
         areaTotal = binding.AreaTotal.text.toString().trim()
@@ -224,10 +230,6 @@ class CrearAnuncio : AppCompatActivity() {
         if (tipoInmueble.isEmpty()){
             binding.TipoInmueble.error = "Seleccione el tipo de inmueble"
             binding.TipoInmueble.requestFocus()
-        }
-        else if (estado.isEmpty()) {
-            binding.Estado.error = "Seleccione el estado"
-            binding.Estado.requestFocus()
         }
         else if (estracto.isEmpty()) {
             binding.Estracto.error = "Seleccione el estrato"
