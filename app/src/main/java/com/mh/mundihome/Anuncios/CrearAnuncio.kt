@@ -219,7 +219,8 @@ class CrearAnuncio : AppCompatActivity() {
         piso = binding.Piso.text.toString().trim()
         mascotas = binding.AceptaMascotas.text.toString().trim()
         administracion = binding.IncluyeAdministracion.text.toString().trim()
-        construccion = binding.AreaConstruida.text.toString().trim()
+    // La información de construcción debe venir de DetallesContruccion
+    construccion = binding.DetallesContruccion.text.toString().trim()
         servicios = binding.Servicios.text.toString().trim()
         estadoLegal = binding.EstadoLegal.text.toString().trim()
         direccion = binding.Locacion.text.toString().trim()
@@ -321,8 +322,9 @@ class CrearAnuncio : AppCompatActivity() {
         hashMap["ciudad"] = "${ciudad}"
         hashMap["direccion"] = "${direccion}"
         hashMap["estado"] = "${Constantes.anuncio_disponible}"
-        hashMap["estrato"] = "${estracto}"
-        hashMap["areaContruida"] = "${areaConstruida}"
+    // Guardar con las claves correctas (coinciden con las que se leen en cargarDetalles)
+    hashMap["estracto"] = "${estracto}"
+    hashMap["areaConstruida"] = "${areaConstruida}"
         hashMap["areaTotal"] = "${areaTotal}"
         hashMap["precio"] = "${precio}"
         hashMap["descripción"] = "${descripcion}"
@@ -383,8 +385,9 @@ class CrearAnuncio : AppCompatActivity() {
         hashMap["tipoInmueble"] = "${tipoInmueble}"
         hashMap["direccion"] = "${direccion}"
         hashMap["estado"] = "${Constantes.anuncio_disponible}"
-        hashMap["estracto"] = "${estracto}"
-        hashMap["areaContruida"] = "${areaConstruida}"
+    // Usar las mismas claves que cargarDetalles
+    hashMap["estracto"] = "${estracto}"
+    hashMap["areaConstruida"] = "${areaConstruida}"
         hashMap["areaTotal"] = "${areaTotal}"
         hashMap["precio"] = "${precio}"
         hashMap["descripción"] = "${descripcion}"
