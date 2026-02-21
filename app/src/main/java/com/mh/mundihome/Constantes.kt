@@ -28,6 +28,18 @@ object Constantes {
     const val FCM_SERVER_KEY =
         "AAAAESoUZA0:APA91bFpSSXr9G0_8U0r-_xLjMk97cncaDcwWva_9hy-yKoQFDvEFBvgS6wb-EibhkUbWhxH5RgMOHQeWdIMt0fbXuVbAUxgNLwN4v4_fM5YAs9yxF6scuxJoHSTemz4Eidi-x-2roJ-"
 
+    val precios = arrayOf(
+        "N/A",
+        "0 - 500.000",
+        "500.000 - 1.000.000",
+        "1.000.000 - 2:000.000",
+        "2.000.000 - 5:000.000",
+        "5.000.000 - 10.000.000",
+        "10.000.000 - 100.000.000",
+        "100.000.000 - 1.000.000.000",
+        "Más de 1.000.000.000"
+    )
+
     val tipo_inmueble = arrayOf(
         "Apartamento",
         "Finca",

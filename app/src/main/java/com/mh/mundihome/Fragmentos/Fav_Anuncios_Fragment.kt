@@ -2,7 +2,6 @@ package com.mh.mundihome.Fragmentos
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
 import androidx.fragment.app.Fragment
@@ -10,32 +9,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.mh.mundihome.Adaptadores.AdaptadorAnuncio
 import com.mh.mundihome.Modelo.ModeloAnuncio
 import com.mh.mundihome.databinding.FragmentFavAnunciosBinding
 
-
 class Fav_Anuncios_Fragment : Fragment() {
 
-    private lateinit var binding : FragmentFavAnunciosBinding
-    private lateinit var mContext : Context
+    private lateinit var binding: FragmentFavAnunciosBinding
+    private lateinit var mContext: Context
     private lateinit var firebaseAuth: FirebaseAuth
 
-    private lateinit var anunciosArrayList: ArrayList<ModeloAnuncio>
-    private lateinit var anunciosAdaptador : AdaptadorAnuncio
+    private var anunciosArrayList = ArrayList<ModeloAnuncio>()
+    private lateinit var anunciosAdaptador: AdaptadorAnuncio
 
     override fun onAttach(context: Context) {
-        this.mContext = context
         super.onAttach(context)
+        this.mContext = context
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentFavAnunciosBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -43,82 +38,75 @@ class Fav_Anuncios_Fragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         firebaseAuth = FirebaseAuth.getInstance()
+
+        // 1. Inicializar adaptador una sola vez
+        anunciosAdaptador = AdaptadorAnuncio(mContext, anunciosArrayList)
+
+        // USA EL ID QUE TENGAS EN EL XML (anunciosRv o favAnunciosRv)
+        binding.anunciosRv.adapter = anunciosAdaptador
+
         cargarAnunciosFav()
 
-        binding.EtBuscar.addTextChangedListener(object : TextWatcher{
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
+        // Buscador
+        binding.EtBuscar.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(filtro: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 try {
-                    val consulta = filtro.toString()
-                    anunciosAdaptador.filter.filter(consulta)
-                }catch (e:Exception){
-
-                }
+                    anunciosAdaptador.filter.filter(filtro.toString())
+                } catch (e: Exception) { e.printStackTrace() }
             }
-
-            override fun afterTextChanged(p0: Editable?) {
-
-            }
+            override fun afterTextChanged(p0: Editable?) {}
         })
 
         binding.IbLimpiar.setOnClickListener {
-            val consulta = binding.EtBuscar.text.toString().trim()
-            if (consulta.isNotEmpty()){
-                binding.EtBuscar.setText("")
-                Toast.makeText(context,
-                    "Se ha limpiado el campo de búsqueda",
-                    Toast.LENGTH_SHORT).show()
-            }else{
-                Toast.makeText(context,
-                    "No se ha ingresado una consulta",
-                    Toast.LENGTH_SHORT).show()
-            }
+            binding.EtBuscar.setText("")
+            anunciosAdaptador.filter.filter("")
         }
     }
 
     private fun cargarAnunciosFav() {
-        anunciosArrayList = ArrayList()
+        val uid = firebaseAuth.uid ?: return
+        val ref = FirebaseDatabase.getInstance().getReference("Usuarios").child(uid).child("Favoritos")
 
-        val ref = FirebaseDatabase.getInstance().getReference("Usuarios")
-        ref.child(firebaseAuth.uid!!).child("Favoritos")
-            .addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    anunciosArrayList.clear()
-                    for (ds in snapshot.children){
-                        val idAnuncio = "${ds.child("idAnuncio").value}"
+        // Usamos addListenerForSingleValueEvent para mayor rapidez
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                anunciosArrayList.clear()
 
-                        val refFav = FirebaseDatabase.getInstance().getReference("Anuncios")
-                        refFav.child(idAnuncio)
-                            .addListenerForSingleValueEvent(object : ValueEventListener{
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    try {
-                                        val modeloAnuncio = snapshot.getValue(ModeloAnuncio::class.java)
-                                        anunciosArrayList.add(modeloAnuncio!!)
-                                    }catch (e:Exception){
-
-                                    }
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {
-                                    TODO("Not yet implemented")
-                                }
-                            })
-                    }
-
-                    Handler().postDelayed({
-                        anunciosAdaptador = AdaptadorAnuncio(mContext, anunciosArrayList)
-                        binding.anunciosRv.adapter = anunciosAdaptador
-                    }, 500)
+                // Si no hay favoritos, refrescar para mostrar lista vacía
+                if (!snapshot.exists()) {
+                    anunciosAdaptador.notifyDataSetChanged()
+                    return
                 }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+                for (ds in snapshot.children) {
+                    val idAnuncio = "${ds.child("idAnuncio").value}"
+                    obtenerDetalleAnuncio(idAnuncio)
                 }
-            })
+            }
+
+            override fun onCancelled(error: DatabaseError) {}
+        })
     }
 
+    private fun obtenerDetalleAnuncio(idAnuncio: String) {
+        val ref = FirebaseDatabase.getInstance().getReference("Anuncios").child(idAnuncio)
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                try {
+                    val modeloAnuncio = snapshot.getValue(ModeloAnuncio::class.java)
+                    if (modeloAnuncio != null) {
+                        // Evitar duplicados
+                        if (!anunciosArrayList.any { it.id == modeloAnuncio.id }) {
+                            anunciosArrayList.add(modeloAnuncio)
+                            // Notificar al adaptador cada vez que entra un anuncio para que aparezcan de inmediato
+                            anunciosAdaptador.notifyDataSetChanged()
+                        }
+                    }
+                } catch (e: Exception) { e.printStackTrace() }
+            }
 
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
 }
