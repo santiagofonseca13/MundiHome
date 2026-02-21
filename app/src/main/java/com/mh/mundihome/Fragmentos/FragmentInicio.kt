@@ -39,8 +39,6 @@ import kotlin.text.compareTo
 class FragmentInicio : Fragment() {
 
     private lateinit var binding : FragmentInicioBinding
-
-
     private lateinit var mContext : Context
     private var distanciaSeleccionada: Double = 50.0 // Por defecto, 50 km
 
@@ -143,7 +141,6 @@ class FragmentInicio : Fragment() {
                 }
             }
         }
-
     }
 
     private fun mostrarPopupMenu(view: View, opciones: Array<String>, filtroKey: String) {
@@ -157,9 +154,7 @@ class FragmentInicio : Fragment() {
             (view as? MaterialButton)?.text = "$filtroKey: $selectedOption"
 
             filtrosSeleccionados[filtroKey] = if (selectedOption != "N/A") selectedOption else null
-
             cargarAnuncios()
-
             true
         }
         popupMenu.show()
@@ -258,6 +253,4 @@ class FragmentInicio : Fragment() {
         val distanciaMetros = puntoPartida.distanceTo(puntoFinal).toDouble()
         return distanciaMetros/1000
     }
-
-
 }
