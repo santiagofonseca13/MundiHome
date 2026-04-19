@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
@@ -21,10 +20,14 @@ class Mis_Anuncios_Publicados_Fragment : Fragment() {
     private lateinit var binding : FragmentMisAnunciosPublicadosBinding
     private lateinit var mContext : Context
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var mDatabase: DatabaseReference
 
     // Inicializamos la lista de inmediato para evitar NullPointerException
     private var anunciosArrayList = ArrayList<ModeloAnuncio>()
     private lateinit var anunciosAdaptador : AdaptadorAnuncio
+
+    // Variable para control RBAC
+    private var isAnunciosEnabled = true
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -38,13 +41,16 @@ class Mis_Anuncios_Publicados_Fragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         firebaseAuth = FirebaseAuth.getInstance()
+        mDatabase = FirebaseDatabase.getInstance().reference
 
         // 1. INICIALIZAR EL ADAPTADOR AQUÍ (Esto evita que la app se cierre al buscar)
         anunciosAdaptador = AdaptadorAnuncio(mContext, anunciosArrayList)
         binding.misAnunciosRv.adapter = anunciosAdaptador
 
-        cargarMisAnuncios()
+        // 2. Iniciar el control de acceso y ahorro de datos (RBAC)
+        verificarModuloRBAC()
 
         // Lógica del buscador
         binding.EtBuscar.addTextChangedListener(object : TextWatcher{
@@ -68,15 +74,45 @@ class Mis_Anuncios_Publicados_Fragment : Fragment() {
         }
     }
 
+    /**
+     * Verifica si el módulo está activo. Si se apaga, limpia la memoria y evita consultas.
+     */
+    private fun verificarModuloRBAC() {
+        val refModulos = mDatabase.child("Configuracion").child("Modulos")
+        refModulos.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    isAnunciosEnabled = snapshot.child("anuncios_enabled").getValue(Boolean::class.java) ?: true
+
+                    if (isAnunciosEnabled) {
+                        cargarMisAnuncios()
+                    } else {
+                        // Si se desactiva, vaciamos la lista para liberar RAM
+                        // y asegurarnos de que no queden datos expuestos.
+                        anunciosArrayList.clear()
+                        if (::anunciosAdaptador.isInitialized) {
+                            anunciosAdaptador.notifyDataSetChanged()
+                        }
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
+
     private fun cargarMisAnuncios() {
+        // Primera barrera: Evitar peticiones si el módulo está desactivado
+        if (!isAnunciosEnabled) return
+
         val uid = firebaseAuth.uid ?: return
         val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
 
-        // Filtramos por UID. Usamos addValueEventListener si quieres cambios en tiempo real,
-        // o addListenerForSingleValueEvent para más velocidad.
         ref.orderByChild("uid").equalTo(uid)
             .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    // Segunda barrera por asincronía (por si se apaga mientras descarga los datos)
+                    if (!isAnunciosEnabled) return
+
                     anunciosArrayList.clear()
                     for (ds in snapshot.children){
                         try {
@@ -88,13 +124,13 @@ class Mis_Anuncios_Publicados_Fragment : Fragment() {
                             e.printStackTrace()
                         }
                     }
-                    // 2. NOTIFICAR CAMBIOS (No recrear el adaptador, solo avisar que hay datos nuevos)
-                    anunciosAdaptador.notifyDataSetChanged()
+                    // NOTIFICAR CAMBIOS (No recrear el adaptador, solo avisar que hay datos nuevos)
+                    if (::anunciosAdaptador.isInitialized) {
+                        anunciosAdaptador.notifyDataSetChanged()
+                    }
                 }
 
-                override fun onCancelled(error: DatabaseError) {
-                    // Evitar el error "Not yet implemented" que cierra la app
-                }
+                override fun onCancelled(error: DatabaseError) {}
             })
     }
 }

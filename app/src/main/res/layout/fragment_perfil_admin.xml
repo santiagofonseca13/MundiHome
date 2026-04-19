@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F8F9FA">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="0dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="#E0E0E0">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="25dp">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/IvPerfilAdmin"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:src="@drawable/img_perfil"
+                    app:civ_border_color="@color/mi_color"
+                    app:civ_border_width="2dp" />
+
+                <TextView
+                    android:id="@+id/TvNombresAdmin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:text="Admin Name"
+                    android:textColor="@color/black"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/TvRolAdmin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ADMINISTRADOR"
+                    android:textColor="@color/mi_color"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.1" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="25dp"
+            android:layout_marginBottom="10dp"
+            android:text="Información Personal"
+            android:textStyle="bold"
+            android:textColor="#666666"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="15dp"
+            app:cardElevation="2dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="12dp">
+                    <TextView android:text="Correo:" android:textColor="#888888" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/TvEmailAdmin" android:layout_alignParentEnd="true" android:text="admin@mail.com" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F0F0F0"/>
+
+                <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="12dp">
+                    <TextView android:text="Teléfono:" android:textColor="#888888" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/TvTelefonoAdmin" android:layout_alignParentEnd="true" android:text="+00 000" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F0F0F0"/>
+
+                <RelativeLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="12dp">
+                    <TextView android:text="Miembro desde:" android:textColor="#888888" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                    <TextView android:id="@+id/TvMiembroAdmin" android:layout_alignParentEnd="true" android:text="01/01/2024" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                </RelativeLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/BtnCerrarSesionAdmin"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginTop="40dp"
+            android:text="Cerrar Sesión de Administrador"
+            android:backgroundTint="#E53935"
+            app:cornerRadius="15dp"
+            app:icon="@drawable/ic_salir"
+            app:iconGravity="textStart" />
+
+    </LinearLayout>
+</ScrollView>

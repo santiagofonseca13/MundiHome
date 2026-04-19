@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
@@ -32,6 +33,7 @@ class CrearAnuncio : AppCompatActivity() {
 
     private lateinit var binding : ActivityCrearAnuncioBinding
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var mDatabase: DatabaseReference
     private lateinit var progressDialog : ProgressDialog
 
     private var imagenUri : Uri?=null
@@ -41,8 +43,9 @@ class CrearAnuncio : AppCompatActivity() {
 
     private var Edicion = false
     private var idAnuncioEditar = ""
-    
-    // Adaptadores para los campos de selección
+
+    private var isPublicarEnabled = true
+
     private lateinit var adaptadorTipoInmueble: ArrayAdapter<String>
     private lateinit var adaptadorEstracto: ArrayAdapter<String>
     private lateinit var adaptadorDormitorios: ArrayAdapter<String>
@@ -57,12 +60,14 @@ class CrearAnuncio : AppCompatActivity() {
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()
+        mDatabase = FirebaseDatabase.getInstance().reference
 
         progressDialog = ProgressDialog(this)
         progressDialog.setTitle("Espere por favor")
         progressDialog.setCanceledOnTouchOutside(false)
 
-        // Inicializar adaptadores
+        verificarModuloRBAC()
+
         adaptadorTipoInmueble = ArrayAdapter(this, R.layout.item_tipo_inmueble, Constantes.tipo_inmueble)
         adaptadorEstracto = ArrayAdapter(this, R.layout.item_estracto, Constantes.estracto)
         adaptadorDormitorios = ArrayAdapter(this, R.layout.item_dormitorios, Constantes.dormitorios)
@@ -71,7 +76,6 @@ class CrearAnuncio : AppCompatActivity() {
         adaptadorMascotas = ArrayAdapter(this, R.layout.item_mascotas, Constantes.marcotas)
         adaptadorAdministracion = ArrayAdapter(this, R.layout.item_administracion, Constantes.administracion)
 
-        // Asignar adaptadores
         binding.TipoInmueble.setAdapter(adaptadorTipoInmueble)
         binding.Estracto.setAdapter(adaptadorEstracto)
         binding.Dormitorios.setAdapter(adaptadorDormitorios)
@@ -82,16 +86,11 @@ class CrearAnuncio : AppCompatActivity() {
 
         Edicion = intent.getBooleanExtra("Edicion", false)
 
-        /*Identificamos de que activity estamos llegando*/
         if (Edicion){
-            //True
-            //LLegamos de la actividad detalle anuncio
             idAnuncioEditar = intent.getStringExtra("idAnuncio") ?: ""
             cargarDetalles()
             binding.BtnCrearAnuncio.text = "Actualizar anuncio"
         }else{
-            //False
-            //LLegando de la actividad Main activity
             binding.BtnCrearAnuncio.text = "Crear anuncio"
         }
 
@@ -99,12 +98,14 @@ class CrearAnuncio : AppCompatActivity() {
         cargarImagenes()
 
         binding.agregarImg.setOnClickListener {
-            mostrarOpciones()
+            if (isPublicarEnabled) mostrarOpciones()
         }
 
         binding.Locacion.setOnDismissListener {
-            val intent = Intent(this, SeleccionarUbicacion::class.java)
-            seleccionarUbicacion_ARL.launch(intent)
+            if (isPublicarEnabled) {
+                val intent = Intent(this, SeleccionarUbicacion::class.java)
+                seleccionarUbicacion_ARL.launch(intent)
+            }
         }
 
         binding.BtnCrearAnuncio.setOnClickListener {
@@ -112,83 +113,89 @@ class CrearAnuncio : AppCompatActivity() {
         }
     }
 
-    private fun cargarDetalles() {
-        var ref = FirebaseDatabase.getInstance().getReference("Anuncios")
-        ref.child(idAnuncioEditar)
-            .addListenerForSingleValueEvent(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    /*Obtener de la BD la información del anuncio*/
-                    val tipoInmueble = "${snapshot.child("tipoInmueble").value}"
-                    val dormitorios = "${snapshot.child("dormitorios").value}"
-                    val estado = "${snapshot.child("estado").value}"
-                    val estracto = "${snapshot.child("estracto").value}"
-                    val areaConstruida = "${snapshot.child("areaConstruida").value}"
-                    val areaTotal = "${snapshot.child("areaTotal").value}"
-                    val banos = "${snapshot.child("baños").value}" // Corregido el nombre del campo
-                    val estacionamiento = "${snapshot.child("estacionamiento").value}"
-                    val piso = "${snapshot.child("piso").value}"
-                    val mascotas = "${snapshot.child("mascotas").value}"
-                    val administracion = "${snapshot.child("administración").value}" // Corregido el nombre del campo
-                    val construccion = "${snapshot.child("construcción").value}" // Corregido el nombre del campo
-                    val servicios = "${snapshot.child("servicios").value}"
-                    val estadoLegal = "${snapshot.child("estadoLegal").value}"
-                    val locacion = "${snapshot.child("direccion").value}"
-                    val precio = "${snapshot.child("precio").value}"
-                    val titulo ="${snapshot.child("titulo").value}"
-                    val descripcion = "${snapshot.child("descripción").value}" // Corregido el nombre del campo
-                    latitud = (snapshot.child("latitud").value) as Double
-                    longitud = (snapshot.child("longitud").value) as Double
-
-                    /*Setear la información en las vistas*/
-                    binding.Locacion.setText(locacion)
-                    binding.EtPrecio.setText(precio)
-                    binding.EtTitulo.setText(titulo)
-                    binding.EtDescripcion.setText(descripcion)
-                    // Establecer valores en los campos manteniendo la funcionalidad de selección
-                    binding.TipoInmueble.setText(tipoInmueble, false)
-                    binding.Estracto.setText(estracto, false)
-                    binding.AreaConstruida.setText(areaConstruida)
-                    binding.AreaTotal.setText(areaTotal)
-                    binding.Dormitorios.setText(dormitorios, false)
-                    binding.BaOs.setText(banos, false)
-                    binding.Estacionamiento.setText(estacionamiento, false)
-                    binding.Piso.setText(piso)
-                    binding.AceptaMascotas.setText(mascotas, false)
-                    binding.IncluyeAdministracion.setText(administracion, false)
-                    binding.DetallesContruccion.setText(construccion)
-                    binding.Servicios.setText(servicios)
-                    binding.EstadoLegal.setText(estadoLegal)
-                    binding.Locacion.setText(locacion)
-
-                    val refImagenes = snapshot.child("Imagenes").ref
-                    refImagenes.addListenerForSingleValueEvent(object : ValueEventListener{
-                        override fun onDataChange(snapshot: DataSnapshot) {
-                            for (ds in snapshot.children){
-                                val id = "${ds.child("id").value}"
-                                val imagenUrl = "${ds.child("imagenUrl").value}"
-
-                                val modeloImgSeleccionada = ModeloImageSeleccionada(id, null, imagenUrl,true)
-                                imagenSelecArrayList.add(modeloImgSeleccionada)
-
-                            }
-
-                            cargarImagenes()
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            TODO("Not yet implemented")
-                        }
-                    })
+    private fun verificarModuloRBAC() {
+        val refModulos = mDatabase.child("Configuracion").child("Modulos")
+        refModulos.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    isPublicarEnabled = snapshot.child("publicar_enabled").getValue(Boolean::class.java) ?: true
+                    if (!isPublicarEnabled) {
+                        if (progressDialog.isShowing) progressDialog.dismiss()
+                        Toast.makeText(this@CrearAnuncio, "Módulo deshabilitado.", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        })
     }
+
+    private fun cargarDetalles() {
+        if (!isPublicarEnabled) return
+        val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
+        ref.child(idAnuncioEditar).addListenerForSingleValueEvent(object : ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (!isPublicarEnabled) return
+
+                val locacion = "${snapshot.child("direccion").value}"
+                val precio = "${snapshot.child("precio").value}"
+                val titulo ="${snapshot.child("titulo").value}"
+                val descripcion = "${snapshot.child("descripción").value}"
+                val tipoInmueble = "${snapshot.child("tipoInmueble").value}"
+                val estracto = "${snapshot.child("estracto").value}"
+                val areaConstruida = "${snapshot.child("areaConstruida").value}"
+                val areaTotal = "${snapshot.child("areaTotal").value}"
+                val dormitorios = "${snapshot.child("dormitorios").value}"
+                val banos = "${snapshot.child("baños").value}"
+                val estacionamiento = if (snapshot.child("estacionamiento").value == true) "Sí" else "No"
+                val piso = "${snapshot.child("piso").value}"
+                val mascotas = if (snapshot.child("mascotas").value == true) "Sí" else "No"
+                val administracion = if (snapshot.child("administración").value == true) "Sí" else "No"
+                val construccion = "${snapshot.child("construcción").value}"
+                val servicios = "${snapshot.child("servicios").value}"
+                val estadoLegal = "${snapshot.child("estadoLegal").value}"
+
+                latitud = snapshot.child("latitud").getValue(Double::class.java) ?: 0.0
+                longitud = snapshot.child("longitud").getValue(Double::class.java) ?: 0.0
+
+                binding.Locacion.setText(locacion)
+                binding.EtPrecio.setText(precio)
+                binding.EtTitulo.setText(titulo)
+                binding.EtDescripcion.setText(descripcion)
+                binding.TipoInmueble.setText(tipoInmueble, false)
+                binding.Estracto.setText(estracto, false)
+                binding.AreaConstruida.setText(areaConstruida)
+                binding.AreaTotal.setText(areaTotal)
+                binding.Dormitorios.setText(dormitorios, false)
+                binding.BaOs.setText(banos, false)
+                binding.Estacionamiento.setText(estacionamiento, false)
+                binding.Piso.setText(piso)
+                binding.AceptaMascotas.setText(mascotas, false)
+                binding.IncluyeAdministracion.setText(administracion, false)
+                binding.DetallesContruccion.setText(construccion)
+                binding.Servicios.setText(servicios)
+                binding.EstadoLegal.setText(estadoLegal)
+
+                val refImagenes = snapshot.child("Imagenes").ref
+                refImagenes.addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (!isPublicarEnabled) return
+                        for (ds in snapshot.children){
+                            val id = "${ds.child("id").value}"
+                            val imagenUrl = "${ds.child("imagenUrl").value}"
+                            val modeloImgSeleccionada = ModeloImageSeleccionada(id, null, imagenUrl,true)
+                            imagenSelecArrayList.add(modeloImgSeleccionada)
+                        }
+                        cargarImagenes()
+                    }
+                    override fun onCancelled(error: DatabaseError) {}
+                })
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
+
     private var tipoInmueble = ""
-    private var ciudad = ""
-    private var estado =""
     private var estracto = ""
     private var areaConstruida =""
     private var areaTotal =""
@@ -207,9 +214,11 @@ class CrearAnuncio : AppCompatActivity() {
     private var descripcion = ""
     private var latitud = 0.0
     private var longitud = 0.0
+
     private fun validarDatos(){
+        if (!isPublicarEnabled) return
+
         tipoInmueble = binding.TipoInmueble.text.toString().trim()
-        estado = Constantes.anuncio_disponible
         estracto = binding.Estracto.text.toString().trim()
         areaConstruida = binding.AreaConstruida.text.toString().trim()
         areaTotal = binding.AreaTotal.text.toString().trim()
@@ -219,8 +228,7 @@ class CrearAnuncio : AppCompatActivity() {
         piso = binding.Piso.text.toString().trim()
         mascotas = binding.AceptaMascotas.text.toString().trim()
         administracion = binding.IncluyeAdministracion.text.toString().trim()
-    // La información de construcción debe venir de DetallesContruccion
-    construccion = binding.DetallesContruccion.text.toString().trim()
+        construccion = binding.DetallesContruccion.text.toString().trim()
         servicios = binding.Servicios.text.toString().trim()
         estadoLegal = binding.EstadoLegal.text.toString().trim()
         direccion = binding.Locacion.text.toString().trim()
@@ -229,245 +237,183 @@ class CrearAnuncio : AppCompatActivity() {
         descripcion = binding.EtDescripcion.text.toString().trim()
 
         if (tipoInmueble.isEmpty()){
-            binding.TipoInmueble.error = "Seleccione el tipo de inmueble"
+            binding.TipoInmueble.error = "Seleccione el tipo"
             binding.TipoInmueble.requestFocus()
-        }
-        else if (estracto.isEmpty()) {
-            binding.Estracto.error = "Seleccione el estrato"
-            binding.Estracto.requestFocus()
-        }
-        else if (areaConstruida.isEmpty()) {
-            binding.AreaConstruida.error = "Ingrese el área construida"
-            binding.AreaConstruida.requestFocus()
-        }
-        else if (areaTotal.isEmpty()) {
-            binding.AreaTotal.error = "Ingrese el área total"
-            binding.AreaTotal.requestFocus()
-        }
-        else if (dormitorios.isEmpty()) {
-            binding.Dormitorios.error = "Seleccione la cantidad de dormitorios"
-            binding.Dormitorios.requestFocus()
-        }
-        else if (banos.isEmpty()) {
-            binding.BaOs.error = "Seleccione la cantidad de baños"
-            binding.BaOs.requestFocus()
-        }
-        else if (estacionamiento.isEmpty()) {
-            binding.Estacionamiento.error = "Seleccione una opción"
-            binding.Estacionamiento.requestFocus()
-        }
-        else if (piso.isEmpty()) {
-            binding.Piso.error = "Ingrese la cantidad de pisos"
-            binding.Piso.requestFocus()
-        }
-        else if (mascotas.isEmpty()) {
-            binding.AceptaMascotas.error = "Selecione una opción"
-            binding.AceptaMascotas.requestFocus()
-        }
-        else if (administracion.isEmpty()) {
-            binding.IncluyeAdministracion.error = "Seleccione una opción"
-            binding.IncluyeAdministracion.requestFocus()
-        }
-        else if (construccion.isEmpty()) {
-            binding.AreaConstruida.error = "Ingrese el área construida"
-            binding.AreaConstruida.requestFocus()
-        }
-        else if (servicios.isEmpty()) {
-            binding.Servicios.error = "Ingrese los servicios"
-            binding.Servicios.requestFocus()
-        }
-        else if (estadoLegal.isEmpty()) {
-            binding.EstadoLegal.error = "Seleccione una opción"
-            binding.EstadoLegal.requestFocus()
-        }
-        else if (direccion.isEmpty()){
-            binding.Locacion.error = "Ingrese una locación"
-            binding.Locacion.requestFocus()
-        }
-        else if (precio.isEmpty()){
-            binding.EtPrecio.error = "Ingrese un precio"
+        } else if (precio.isEmpty()){
+            binding.EtPrecio.error = "Ingrese precio"
             binding.EtPrecio.requestFocus()
-        }
-        else if (titulo.isEmpty()){
-            binding.EtTitulo.error = "Ingrese un títuli"
-            binding.EtTitulo.requestFocus()
-        }
-        else if (descripcion.isEmpty()){
-            binding.EtDescripcion.error = "Ingrese una descripción"
-            binding.EtDescripcion.requestFocus()
-        }
-       else{
-            if (Edicion){
-                //True
-                actualizarAnuncio()
-            }else{
-                //False
-                if (imagenUri == null){
-                    Toast.makeText(this,"Agregue al menos una imagen",Toast.LENGTH_SHORT).show()
-                }else{
+        } else {
+            if (Edicion) actualizarAnuncio()
+            else {
+                if (imagenSelecArrayList.isEmpty()){
+                    Toast.makeText(this,"Agregue al menos una imagen para su anuncio", Toast.LENGTH_SHORT).show()
+                } else {
                     agregarAnuncio()
                 }
-
             }
         }
     }
 
     private fun actualizarAnuncio() {
-        progressDialog.setMessage("Actualizando anuncio")
+        if (!isPublicarEnabled) return
+        progressDialog.setMessage("Actualizando...")
         progressDialog.show()
 
-        val hashMap = HashMap<String, Any>()
+        // --- CONVERSIONES ---
+        val precioNum = precio.toLongOrNull() ?: 0L
+        val areaConstruidaNum = areaConstruida.toDoubleOrNull() ?: 0.0
+        val areaTotalNum = areaTotal.toDoubleOrNull() ?: 0.0
+        val estractoNum = estracto.toIntOrNull() ?: 0
+        val dormitoriosNum = dormitorios.toIntOrNull() ?: 0
+        val banosNum = banos.toIntOrNull() ?: 0
+        val pisoNum = piso.toIntOrNull() ?: 0
+        val aceptaMascotasBool = mascotas.equals("Sí", ignoreCase = true)
+        val incluyeAdminBool = administracion.equals("Sí", ignoreCase = true)
+        val estacionamientoBool = estacionamiento.equals("Sí", ignoreCase = true)
 
-        hashMap["tipoInmueble"] = "${tipoInmueble}"
-        hashMap["ciudad"] = "${ciudad}"
-        hashMap["direccion"] = "${direccion}"
-        hashMap["estado"] = "${Constantes.anuncio_disponible}"
-    // Guardar con las claves correctas (coinciden con las que se leen en cargarDetalles)
-    hashMap["estracto"] = "${estracto}"
-    hashMap["areaConstruida"] = "${areaConstruida}"
-        hashMap["areaTotal"] = "${areaTotal}"
-        hashMap["precio"] = "${precio}"
-        hashMap["descripción"] = "${descripcion}"
-        hashMap["dormitorios"] = "${dormitorios}"
-        hashMap["baños"] = "${banos}"
-        hashMap["estacionamiento"] = "${estacionamiento}"
-        hashMap["piso"] = "${piso}"
-        hashMap["mascotas"] = "${mascotas}"
-        hashMap["administración"] = "${administracion}"
-        hashMap["construcción"] = "${construccion}"
-        hashMap["servicios"] = "${servicios}"
-        hashMap["estadoLegal"] = "${estadoLegal}"
-        hashMap["titulo"] = "${titulo}"
+        val hashMap = HashMap<String, Any>()
+        hashMap["tipoInmueble"] = tipoInmueble
+        hashMap["direccion"] = direccion
+        hashMap["descripción"] = descripcion
+        hashMap["construcción"] = construccion
+        hashMap["servicios"] = servicios
+        hashMap["estadoLegal"] = estadoLegal
+        hashMap["titulo"] = titulo
+        hashMap["estracto"] = estractoNum
+        hashMap["areaConstruida"] = areaConstruidaNum
+        hashMap["areaTotal"] = areaTotalNum
+        hashMap["precio"] = precioNum
+        hashMap["dormitorios"] = dormitoriosNum
+        hashMap["baños"] = banosNum
+        hashMap["piso"] = pisoNum
+        hashMap["mascotas"] = aceptaMascotasBool
+        hashMap["administración"] = incluyeAdminBool
+        hashMap["estacionamiento"] = estacionamientoBool
         hashMap["latitud"] = latitud
         hashMap["longitud"] = longitud
 
         val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
-        ref.child(idAnuncioEditar)
-            .updateChildren(hashMap)
+        ref.child(idAnuncioEditar).updateChildren(hashMap)
             .addOnSuccessListener {
                 progressDialog.dismiss()
                 cargarImagenesStorage(idAnuncioEditar)
             }
             .addOnFailureListener {e->
                 progressDialog.dismiss()
-                Toast.makeText(this, "Falló la actualización debido a ${e.message}",Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error: ${e.message}",Toast.LENGTH_SHORT).show()
             }
     }
 
-    private val seleccionarUbicacion_ARL =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()){resultado->
-            if (resultado.resultCode == Activity.RESULT_OK){
-                val data = resultado.data
-                if (data != null){
-                    latitud = data.getDoubleExtra("latitud", 0.0)
-                    longitud = data.getDoubleExtra("longitud", 0.0)
-                    direccion = data.getStringExtra("direccion") ?: ""
-
-                    binding.Locacion.setText(direccion)
-                }
-            }else{
-                Toast.makeText(this, "Cancelado",Toast.LENGTH_SHORT).show()
-            }
-        }
-
     private fun agregarAnuncio() {
-        progressDialog.setMessage("Agregando anuncio")
+        if (!isPublicarEnabled) return
+        progressDialog.setMessage("Agregando...")
         progressDialog.show()
 
         val tiempo = Constantes.obtenerTiempoDis()
-
         val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
-        val keyId = ref.push().key
+        val keyId = ref.push().key ?: ""
+
+        // --- CONVERSIONES ---
+        val precioNum = precio.toLongOrNull() ?: 0L
+        val areaConstruidaNum = areaConstruida.toDoubleOrNull() ?: 0.0
+        val areaTotalNum = areaTotal.toDoubleOrNull() ?: 0.0
+        val estractoNum = estracto.toIntOrNull() ?: 0
+        val dormitoriosNum = dormitorios.toIntOrNull() ?: 0
+        val banosNum = banos.toIntOrNull() ?: 0
+        val pisoNum = piso.toIntOrNull() ?: 0
+        val aceptaMascotasBool = mascotas.equals("Sí", ignoreCase = true)
+        val incluyeAdminBool = administracion.equals("Sí", ignoreCase = true)
+        val estacionamientoBool = estacionamiento.equals("Sí", ignoreCase = true)
 
         val hashMap = HashMap<String, Any>()
-        hashMap["id"] = "${keyId}"
+        hashMap["id"] = keyId
         hashMap["uid"] = "${firebaseAuth.uid}"
-        hashMap["tipoInmueble"] = "${tipoInmueble}"
-        hashMap["direccion"] = "${direccion}"
+        hashMap["tipoInmueble"] = tipoInmueble
+        hashMap["direccion"] = direccion
         hashMap["estado"] = "${Constantes.anuncio_disponible}"
-    // Usar las mismas claves que cargarDetalles
-    hashMap["estracto"] = "${estracto}"
-    hashMap["areaConstruida"] = "${areaConstruida}"
-        hashMap["areaTotal"] = "${areaTotal}"
-        hashMap["precio"] = "${precio}"
-        hashMap["descripción"] = "${descripcion}"
-        hashMap["dormitorios"] = "${dormitorios}"
-        hashMap["baños"] = "${banos}"
-        hashMap["estacionamiento"] = "${estacionamiento}"
-        hashMap["piso"] = "${piso}"
-        hashMap["mascotas"] = "${mascotas}"
-        hashMap["administración"] = "${administracion}"
-        hashMap["construcción"] = "${construccion}"
-        hashMap["servicios"] = "${servicios}"
-        hashMap["estadoLegal"] = "${estadoLegal}"
-        hashMap["titulo"] = "${titulo}"
-        hashMap["estado"] = "${Constantes.anuncio_disponible}"
+        hashMap["descripción"] = descripcion
+        hashMap["construcción"] = construccion
+        hashMap["servicios"] = servicios
+        hashMap["estadoLegal"] = estadoLegal
+        hashMap["titulo"] = titulo
+        hashMap["estracto"] = estractoNum
+        hashMap["areaConstruida"] = areaConstruidaNum
+        hashMap["areaTotal"] = areaTotalNum
+        hashMap["precio"] = precioNum
+        hashMap["dormitorios"] = dormitoriosNum
+        hashMap["baños"] = banosNum
+        hashMap["piso"] = pisoNum
+        hashMap["mascotas"] = aceptaMascotasBool
+        hashMap["administración"] = incluyeAdminBool
+        hashMap["estacionamiento"] = estacionamientoBool
         hashMap["tiempo"] = tiempo
         hashMap["latitud"] = latitud
         hashMap["longitud"] = longitud
         hashMap["contadorVistas"] = 0
 
-        ref.child(keyId!!)
-            .setValue(hashMap)
-            .addOnSuccessListener {
-                cargarImagenesStorage(keyId)
-            }
+        ref.child(keyId).setValue(hashMap)
+            .addOnSuccessListener { cargarImagenesStorage(keyId) }
             .addOnFailureListener {e->
-                Toast.makeText(
-                    this, "${e.message}",Toast.LENGTH_SHORT
-                ).show()
+                progressDialog.dismiss()
+                Toast.makeText(this, "${e.message}",Toast.LENGTH_SHORT).show()
             }
     }
 
     private fun cargarImagenesStorage(keyId : String) {
-        for (i in imagenSelecArrayList.indices){
-            val modeloImagenSel = imagenSelecArrayList[i]
+        progressDialog.setMessage("Subiendo imágenes...")
 
-            if (!modeloImagenSel.deInternet){
-                val nombreImagen = modeloImagenSel.id
-                val rutaNombreImagen = "Anuncios/$nombreImagen"
+        val imagenesParaSubir = imagenSelecArrayList.filter { !it.deInternet }
 
-                val storageReference = FirebaseStorage.getInstance().getReference(rutaNombreImagen)
-                storageReference.putFile(modeloImagenSel.imagenUri!!)
-                    .addOnSuccessListener {taskSnaphot->
-                        val uriTask = taskSnaphot.storage.downloadUrl
-                        while (!uriTask.isSuccessful);
-                        val urlImgCargada = uriTask.result
+        if (imagenesParaSubir.isEmpty()) {
+            finalizarFlujo()
+            return
+        }
 
-                        if (uriTask.isSuccessful){
-                            val hashMap = HashMap<String, Any>()
-                            hashMap["id"] = "${modeloImagenSel.id}"
-                            hashMap["imagenUrl"] = "$urlImgCargada"
+        var contadorImagenesSubidas = 0 // El guardián del flujo
 
-                            val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
-                            ref.child(keyId).child("Imagenes")
-                                .child(nombreImagen)
-                                .updateChildren(hashMap)
-                        }
+        for (modelo in imagenesParaSubir) {
+            val nombreImagen = modelo.id
+            val storageReference = FirebaseStorage.getInstance().getReference("Anuncios/$nombreImagen")
 
-                        if (Edicion){
-                            progressDialog.dismiss()
-                            val intent = Intent(this@CrearAnuncio, MainActivity::class.java)
-                            startActivity(intent)
-                            Toast.makeText(this, "Se actualizó la información del anuncio", Toast.LENGTH_SHORT).show()
-                            finishAffinity()
-                        }else{
-                            progressDialog.dismiss()
-                            Toast.makeText(this, "Se publicó su anuncio", Toast.LENGTH_SHORT).show()
-                            limpiarCampos()
-                        }
+            storageReference.putFile(modelo.imagenUri!!)
+                .addOnSuccessListener { taskSnapshot ->
+                    taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
+                        val urlImgCargada = uri.toString()
 
+                        val hashMap = HashMap<String, Any>()
+                        hashMap["id"] = nombreImagen
+                        hashMap["imagenUrl"] = urlImgCargada
 
+                        FirebaseDatabase.getInstance().getReference("Anuncios")
+                            .child(keyId).child("Imagenes").child(nombreImagen)
+                            .updateChildren(hashMap)
+                            .addOnSuccessListener {
+                                contadorImagenesSubidas++
 
+                                if (contadorImagenesSubidas == imagenesParaSubir.size) {
+                                    finalizarFlujo()
+                                }
+                            }
                     }
-                    .addOnFailureListener {e->
-                        Toast.makeText(
-                            this, "${e.message}",Toast.LENGTH_SHORT
-                        ).show()
-                    }
-            }
+                }
+                .addOnFailureListener { e ->
+                    // Si una falla, debemos avisar y cerrar el progress para no quedar bloqueados
+                    if (progressDialog.isShowing) progressDialog.dismiss()
+                    Toast.makeText(this, "Fallo al subir una imagen: ${e.message}", Toast.LENGTH_SHORT).show()
+                }
+        }
+    }
 
+    private fun finalizarFlujo() {
+        if (progressDialog.isShowing) progressDialog.dismiss()
 
+        if (Edicion) {
+            Toast.makeText(this, "Anuncio actualizado con éxito", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, MainActivity::class.java))
+            finishAffinity()
+        } else {
+            Toast.makeText(this, "¡Anuncio publicado con éxito!", Toast.LENGTH_SHORT).show()
+            limpiarCampos()
         }
     }
 
@@ -479,7 +425,6 @@ class CrearAnuncio : AppCompatActivity() {
         binding.EtTitulo.setText("")
         binding.EtDescripcion.setText("")
         binding.TipoInmueble.setText("")
-        binding.Estado.setText("")
         binding.Estracto.setText("")
         binding.AreaConstruida.setText("")
         binding.AreaTotal.setText("")
@@ -496,45 +441,23 @@ class CrearAnuncio : AppCompatActivity() {
 
     private fun mostrarOpciones() {
         val popupMenu = PopupMenu(this, binding.agregarImg)
-
         popupMenu.menu.add(Menu.NONE, 1 ,1, "Cámara")
         popupMenu.menu.add(Menu.NONE,2,2,"Galería")
-
         popupMenu.show()
-
         popupMenu.setOnMenuItemClickListener { item->
-            val itemId = item.itemId
-            if (itemId == 1){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                    solicitarPermisoCamara.launch(arrayOf(android.Manifest.permission.CAMERA))
-                }else{
-                    solicitarPermisoCamara.launch(arrayOf(
-                        android.Manifest.permission.CAMERA,
-                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE
-                    ))
-                }
-            }else if (itemId ==2){
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
-                    imagenGaleria()
-                }else{
-                    solicitarPermisoAlmacenamiento.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                }
+            if (item.itemId == 1) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) solicitarPermisoCamara.launch(arrayOf(android.Manifest.permission.CAMERA))
+                else solicitarPermisoCamara.launch(arrayOf(android.Manifest.permission.CAMERA, android.Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            } else if (item.itemId == 2) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) imagenGaleria()
+                else solicitarPermisoAlmacenamiento.launch(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
             true
         }
     }
 
-    private val solicitarPermisoAlmacenamiento = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()){esConcedido->
-        if (esConcedido){
-            imagenGaleria()
-        }else{
-            Toast.makeText(
-                this,
-                "El permiso de almacenamiento ha sido denegado",
-                Toast.LENGTH_SHORT
-            ).show()
-        }
+    private val solicitarPermisoAlmacenamiento = registerForActivityResult(ActivityResultContracts.RequestPermission()){ esConcedido ->
+        if (esConcedido) imagenGaleria()
     }
 
     private fun imagenGaleria() {
@@ -543,77 +466,52 @@ class CrearAnuncio : AppCompatActivity() {
         resultadoGaleria_ARL.launch(intent)
     }
 
-    private val resultadoGaleria_ARL =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()){resultado->
-            if (resultado.resultCode == Activity.RESULT_OK){
-                val data = resultado.data
-                imagenUri = data!!.data
-
+    private val resultadoGaleria_ARL = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ resultado ->
+        if (resultado.resultCode == Activity.RESULT_OK){
+            val uri = resultado.data?.data
+            if (uri != null) {
                 val tiempo = "${Constantes.obtenerTiempoDis()}"
-                val modeloImgSel = ModeloImageSeleccionada(
-                    tiempo, imagenUri, null, false
-                )
-                imagenSelecArrayList.add(modeloImgSel)
+                imagenSelecArrayList.add(ModeloImageSeleccionada(tiempo, uri, null, false))
                 cargarImagenes()
-
-            }else{
-                Toast.makeText(
-                    this,
-                    "Cancelado",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
-        }
-
-    private val solicitarPermisoCamara = registerForActivityResult(
-        ActivityResultContracts.RequestMultiplePermissions()){ resultado->
-        var todosConcedidos = true
-        for (esConcedido in resultado.values){
-            todosConcedidos = todosConcedidos && esConcedido
-        }
-        if (todosConcedidos){
-            imageCamara()
-        }else
-        {
-            Toast.makeText(
-                this,
-                "El permiso de la cámara o almacenamiento ha sido denegada, o ambas fueron denegadas",
-                Toast.LENGTH_SHORT
-            ).show()
         }
     }
 
-    private fun imageCamara() {
-        val contentValues = ContentValues()
-        contentValues.put(MediaStore.Images.Media.TITLE, "Titulo_imagen")
-        contentValues.put(MediaStore.Images.Media.DESCRIPTION, "Descripcion_imagen")
-        imagenUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+    private val solicitarPermisoCamara = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){ res ->
+        if (res.values.all { it }) imageCamara()
+    }
 
+    private fun imageCamara() {
+        val values = ContentValues()
+        values.put(MediaStore.Images.Media.TITLE, "Temp")
+        imagenUri = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         intent.putExtra(MediaStore.EXTRA_OUTPUT, imagenUri)
         resultadoCamara_ARL.launch(intent)
     }
 
-    private val resultadoCamara_ARL =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()){resultado->
-            if (resultado.resultCode == Activity.RESULT_OK){
-                val tiempo = "${Constantes.obtenerTiempoDis()}"
-                val modeloImgSel = ModeloImageSeleccionada(
-                    tiempo, imagenUri, null, false
-                )
-                imagenSelecArrayList.add(modeloImgSel)
-                cargarImagenes()
-            }else{
-                Toast.makeText(
-                    this,
-                    "Cancelado",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+    private val resultadoCamara_ARL = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ res ->
+        if (res.resultCode == Activity.RESULT_OK && imagenUri != null){
+            val tiempo = "${Constantes.obtenerTiempoDis()}"
+            imagenSelecArrayList.add(ModeloImageSeleccionada(tiempo, imagenUri, null, false))
+            cargarImagenes()
         }
+    }
 
     private fun cargarImagenes() {
         adaptadorImagenSel = AdaptadorImagenSeleccionada(this, imagenSelecArrayList, idAnuncioEditar)
         binding.RVImagenes.adapter = adaptadorImagenSel
+    }
+
+    private val seleccionarUbicacion_ARL = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){ res ->
+        if (res.resultCode == Activity.RESULT_OK){
+            val data = res.data
+            if (data != null){
+                latitud = data.getDoubleExtra("latitud", 0.0)
+                longitud = data.getDoubleExtra("longitud", 0.0)
+                direccion = data.getStringExtra("direccion") ?: ""
+                binding.Locacion.setText(direccion)
+            }
+        }
     }
 }

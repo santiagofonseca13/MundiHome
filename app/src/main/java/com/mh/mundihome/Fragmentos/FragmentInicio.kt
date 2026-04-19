@@ -38,11 +38,16 @@ class FragmentInicio : Fragment() {
     private var anuncioArrayList = ArrayList<ModeloAnuncio>()
     private lateinit var adaptadorAnuncio: AdaptadorAnuncio
     private lateinit var locacionSP: SharedPreferences
+    private lateinit var mDatabase: DatabaseReference
 
     private var actualLatitud = 0.0
     private var actualLongitud = 0.0
     private var actualDireccion = ""
     private var distanciaSeleccionada: Double = 50.0
+
+    // Variables de estado para RBAC
+    private var isUbicacionEnabled = true
+    private var isInicioEnabled = true
 
     private var itemLimit = 14
     private var isLoading = false
@@ -63,8 +68,10 @@ class FragmentInicio : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        mDatabase = FirebaseDatabase.getInstance().reference
         locacionSP = mContext.getSharedPreferences("LOCACION_SP", Context.MODE_PRIVATE)
 
+        // Cargar datos de ubicación guardados
         actualLatitud = locacionSP.getFloat("ACTUAL_LATITUD", 0.0f).toDouble()
         actualLongitud = locacionSP.getFloat("ACTUAL_LONGITUD", 0.0f).toDouble()
         actualDireccion = locacionSP.getString("ACTUAL_DIRECCION", "") ?: ""
@@ -74,13 +81,134 @@ class FragmentInicio : Fragment() {
             binding.TvLocacion.text = actualDireccion
         }
 
+        // Configurar RecyclerView
         adaptadorAnuncio = AdaptadorAnuncio(mContext, anuncioArrayList)
         binding.anunciosRv.setHasFixedSize(true)
         binding.anunciosRv.adapter = adaptadorAnuncio
 
-        setupScrollListener()
-        cargarAnuncios()
+        // 1. Activar el sistema de control modular
+        verificarModulosRBAC()
 
+        // 2. Configurar listeners de UI
+        setupScrollListener()
+        setupBusqueda()
+        setupBotonesFiltros()
+        setupSliderDistancia()
+
+        // Botón para seleccionar ubicación (con chequeo RBAC)
+        binding.TvLocacion.setOnClickListener {
+            if (isUbicacionEnabled) {
+                val intent = Intent(mContext, SeleccionarUbicacion::class.java)
+                seleccionarUbicacionARL.launch(intent)
+            } else {
+                Toast.makeText(mContext, "La selección de ubicación está deshabilitada", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Botón Limpiar
+        binding.IbLimpiar.setOnClickListener {
+            restablecerTodo()
+        }
+
+        // Carga inicial
+        cargarAnuncios()
+    }
+
+    private fun verificarModulosRBAC() {
+        val refModulos = mDatabase.child("Configuracion").child("Modulos")
+        refModulos.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    // Control Módulo Inicio
+                    isInicioEnabled = snapshot.child("inicio_enabled").getValue(Boolean::class.java) ?: true
+                    binding.anunciosRv.visibility = if (isInicioEnabled) View.VISIBLE else View.GONE
+                    binding.EtBuscar.isEnabled = isInicioEnabled
+
+                    // Control Módulo Ubicación
+                    isUbicacionEnabled = snapshot.child("ubicacion_enabled").getValue(Boolean::class.java) ?: true
+                    binding.sliderDistancia.visibility = if (isUbicacionEnabled) View.VISIBLE else View.GONE
+                    binding.tvDistanciaActual.visibility = if (isUbicacionEnabled) View.VISIBLE else View.GONE
+
+                    if (!isInicioEnabled) {
+                        Toast.makeText(mContext, "Módulo de anuncios en mantenimiento", Toast.LENGTH_LONG).show()
+                    }
+
+                    resetearYCargar()
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        })
+    }
+
+    private fun cargarAnuncios() {
+        if (!isInicioEnabled) {
+            anuncioArrayList.clear()
+            adaptadorAnuncio.notifyDataSetChanged()
+            return
+        }
+
+        isLoading = true
+        val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
+
+        // 1. QUITAMOS el limitToFirst de Firebase.
+        // Traemos los anuncios y los filtramos en la memoria del teléfono.
+        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val tempLista = ArrayList<ModeloAnuncio>()
+                for (ds in snapshot.children) {
+                    try {
+                        val modelo = ds.getValue(ModeloAnuncio::class.java) ?: continue
+
+                        // Solo mostramos los que pasen el filtro
+                        if (validarFiltros(modelo)) {
+                            tempLista.add(modelo)
+                        }
+                    } catch (e: Exception) { e.printStackTrace() }
+                }
+
+                anuncioArrayList.clear()
+
+                // 2. APLICAMOS EL LÍMITE (PAGINACIÓN) AQUÍ.
+                // Toma solo los primeros 14, 28, etc., de los que SÍ pasaron el filtro.
+                anuncioArrayList.addAll(tempLista.take(itemLimit))
+
+                adaptadorAnuncio.notifyDataSetChanged()
+                isLoading = false
+            }
+            override fun onCancelled(error: DatabaseError) { isLoading = false }
+        })
+    }
+
+    private fun validarFiltros(modelo: ModeloAnuncio): Boolean {
+        if (isUbicacionEnabled && actualLatitud != 0.0) {
+            val res = FloatArray(1)
+            Location.distanceBetween(actualLatitud, actualLongitud, modelo.latitud, modelo.longitud, res)
+            if ((res[0] / 1000) > distanciaSeleccionada) return false
+        }
+
+        return filtrosSeleccionados.all { (key, value) ->
+            if (value == null) true else when(key) {
+                // Strings (Se comparan directamente)
+                "tipo_inmueble" -> modelo.tipoInmueble == value
+
+                // Ints (Convertimos el texto del menú desplegable a Número)
+                "estracto" -> modelo.estracto == (value.toIntOrNull() ?: 0)
+                "dormitorios" -> modelo.dormitorios == (value.toIntOrNull() ?: 0)
+                "banos" -> modelo.baños == (value.toIntOrNull() ?: 0)
+
+                // Booleans (Comparamos si el menú decía "Sí")
+                "estacionamiento" -> modelo.estacionamiento == value.equals("Sí", ignoreCase = true)
+                "marcotas" -> modelo.mascotas == value.equals("Sí", ignoreCase = true)
+                "administracion" -> modelo.administración == value.equals("Sí", ignoreCase = true)
+
+                // Long (Le pasamos el número real directo de la base de datos)
+                "precio" -> validarRangoPrecio(modelo.precio, value)
+                else -> true
+            }
+        }
+    }
+
+    private fun setupBusqueda() {
         binding.EtBuscar.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(filtro: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -90,32 +218,9 @@ class FragmentInicio : Fragment() {
             }
             override fun afterTextChanged(p0: Editable?) {}
         })
+    }
 
-        // CORRECCIÓN: Botón Limpiar restablece filtros y UI
-        binding.IbLimpiar.setOnClickListener {
-            binding.EtBuscar.setText("")
-            filtrosSeleccionados.clear()
-
-            // Restablecer textos originales
-            binding.btnTipoInmueble.text = "Tipo Inmueble"
-            binding.btnEstrato.text = "Estrato"
-            binding.btnDormitorios.text = "Dormitorios"
-            binding.btnBanos.text = "Baños"
-            binding.btnEstacionamiento.text = "Estacionamiento"
-            binding.btnMarcotas.text = "Mascotas"
-            binding.btnAdministracion.text = "Administración"
-            binding.btnPrecio.text = "Precio"
-
-            // Restablecer Slider
-            distanciaSeleccionada = 50.0
-            binding.sliderDistancia.value = 50f
-            binding.tvDistanciaActual.text = "Radio de búsqueda: 50 km"
-            locacionSP.edit().putFloat("DISTANCIA_PREFERIDA", 50f).apply()
-
-            Toast.makeText(mContext, "Filtros restablecidos", Toast.LENGTH_SHORT).show()
-            resetearYCargar()
-        }
-
+    private fun setupBotonesFiltros() {
         binding.btnTipoInmueble.setOnClickListener { mostrarPopupMenu(it, tipo_inmueble, "tipo_inmueble") }
         binding.btnEstrato.setOnClickListener { mostrarPopupMenu(it, estracto, "estracto") }
         binding.btnDormitorios.setOnClickListener { mostrarPopupMenu(it, dormitorios, "dormitorios") }
@@ -124,7 +229,9 @@ class FragmentInicio : Fragment() {
         binding.btnMarcotas.setOnClickListener { mostrarPopupMenu(it, marcotas, "marcotas") }
         binding.btnAdministracion.setOnClickListener { mostrarPopupMenu(it, administracion, "administracion") }
         binding.btnPrecio.setOnClickListener { mostrarPopupMenu(it, precios, "precio") }
+    }
 
+    private fun setupSliderDistancia() {
         binding.sliderDistancia.apply {
             value = distanciaSeleccionada.toFloat()
             addOnChangeListener { _, value, fromUser ->
@@ -136,11 +243,6 @@ class FragmentInicio : Fragment() {
                 }
             }
         }
-
-        binding.TvLocacion.setOnClickListener {
-            val intent = Intent(mContext, SeleccionarUbicacion::class.java)
-            seleccionarUbicacionARL.launch(intent)
-        }
     }
 
     private fun setupScrollListener() {
@@ -150,7 +252,7 @@ class FragmentInicio : Fragment() {
                 val totalItemCount = layoutManager.itemCount
                 val lastVisible = layoutManager.findLastVisibleItemPosition()
 
-                if (!isLoading && totalItemCount <= (lastVisible + 4)) {
+                if (!isLoading && totalItemCount > 0 && totalItemCount <= (lastVisible + 4)) {
                     itemLimit += incremento
                     cargarAnuncios()
                 }
@@ -158,63 +260,20 @@ class FragmentInicio : Fragment() {
         })
     }
 
-    private fun cargarAnuncios() {
-        isLoading = true
-        val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
-        ref.limitToFirst(itemLimit).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val tempLista = ArrayList<ModeloAnuncio>()
-                for (ds in snapshot.children) {
-                    try {
-                        val modelo = ds.getValue(ModeloAnuncio::class.java) ?: continue
-                        if (validarFiltros(modelo)) {
-                            tempLista.add(modelo)
-                        }
-                    } catch (e: Exception) { e.printStackTrace() }
-                }
-                anuncioArrayList.clear()
-                anuncioArrayList.addAll(tempLista)
-                adaptadorAnuncio.notifyDataSetChanged()
-                isLoading = false
-            }
-            override fun onCancelled(error: DatabaseError) { isLoading = false }
-        })
-    }
-
-    private fun validarFiltros(modelo: ModeloAnuncio): Boolean {
-        if (actualLatitud != 0.0) {
-            val res = FloatArray(1)
-            Location.distanceBetween(actualLatitud, actualLongitud, modelo.latitud, modelo.longitud, res)
-            if ((res[0] / 1000) > distanciaSeleccionada) return false
-        }
-
-        return filtrosSeleccionados.all { (key, value) ->
-            if (value == null) true else when(key) {
-                "tipo_inmueble" -> modelo.tipoInmueble == value
-                "estracto" -> modelo.estracto == value
-                "dormitorios" -> modelo.dormitorios == value
-                "banos" -> modelo.baños == value
-                "estacionamiento" -> modelo.estacionamiento == value
-                "marcotas" -> modelo.mascotas == value
-                "administracion" -> modelo.administración == value
-                "precio" -> {
-                    val p = modelo.precio.toLongOrNull() ?: 0L
-                    validarRangoPrecio(p, value)
-                }
-                else -> true
-            }
-        }
-    }
-
-    private fun validarRangoPrecio(p: Long, rango: String): Boolean {
-        return when (rango) {
-            "0 - 500k" -> p <= 500000
-            "500k - 1M" -> p in 500001..1000000
-            "1M - 2M" -> p in 1000001..2000000
-            "2M - 5M" -> p in 2000001..5000000
-            "Más de 5M" -> p > 5000000
-            else -> true
-        }
+    private fun restablecerTodo() {
+        binding.EtBuscar.setText("")
+        filtrosSeleccionados.clear()
+        binding.btnTipoInmueble.text = "Tipo Inmueble"
+        binding.btnEstrato.text = "Estrato"
+        binding.btnDormitorios.text = "Dormitorios"
+        binding.btnBanos.text = "Baños"
+        binding.btnEstacionamiento.text = "Estacionamiento"
+        binding.btnMarcotas.text = "Mascotas"
+        binding.btnAdministracion.text = "Administración"
+        binding.btnPrecio.text = "Precio"
+        distanciaSeleccionada = 50.0
+        binding.sliderDistancia.value = 50f
+        resetearYCargar()
     }
 
     private fun mostrarPopupMenu(v: View, opc: Array<String>, filtroKey: String) {
@@ -222,12 +281,23 @@ class FragmentInicio : Fragment() {
         opc.forEachIndexed { i, s -> p.menu.add(0, i, i, s) }
         p.setOnMenuItemClickListener {
             val sel = opc[it.itemId]
-            (v as MaterialButton).text = if (sel == "N/A") filtroKey.replace("_"," ").replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() } else sel
+            (v as MaterialButton).text = if (sel == "N/A") filtroKey.replace("_"," ").replaceFirstChar { it.uppercase() } else sel
             filtrosSeleccionados[filtroKey] = if (sel == "N/A") null else sel
             resetearYCargar()
             true
         }
         p.show()
+    }
+
+    private fun validarRangoPrecio(p: Long, rango: String): Boolean {
+        return when (rango) {
+            "0 - 500k" -> p <= 500_000L
+            "500k - 1M" -> p in 500_001L..1_000_000L
+            "1M - 2M" -> p in 1_000_001L..2_000_000L
+            "2M - 5M" -> p in 2_000_001L..5_000_000L
+            "Más de 5M" -> p > 5_000_000L
+            else -> true
+        }
     }
 
     private fun resetearYCargar() {

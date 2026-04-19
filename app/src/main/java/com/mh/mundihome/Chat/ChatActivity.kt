@@ -14,16 +14,12 @@ import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.android.volley.Response
-
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.mh.mundihome.Adaptadores.AdaptadorChat
 import com.mh.mundihome.Constantes
@@ -36,10 +32,10 @@ class ChatActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityChatBinding
     private lateinit var firebaseAuth: FirebaseAuth
+    private lateinit var mDatabase: DatabaseReference
     private lateinit var progressDialog : ProgressDialog
 
     private var uidVendedor = "" /*Uid del receptor*/
-
     private var miUid = "" /*Uid del emisor*/
     private var miNombre = ""
     private var recibimosToken = ""
@@ -47,12 +43,16 @@ class ChatActivity : AppCompatActivity() {
     private var chatRuta = ""
     private var imagenUri : Uri ?= null
 
+    // Variable para el control RBAC
+    private var isChatsEnabled = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         firebaseAuth = FirebaseAuth.getInstance()
+        mDatabase = FirebaseDatabase.getInstance().reference
 
         progressDialog = ProgressDialog(this)
         progressDialog.setTitle("Espere por favor")
@@ -63,6 +63,9 @@ class ChatActivity : AppCompatActivity() {
 
         chatRuta = Constantes.rutaChat(uidVendedor, miUid)
 
+        // --- INICIAR CONTROL DE MÓDULOS (RBAC) ---
+        verificarModuloRBAC()
+
         cargarMiInformacion()
         cargarInfoVendedor()
         cargarMensajes()
@@ -72,12 +75,47 @@ class ChatActivity : AppCompatActivity() {
         }
 
         binding.adjuntarFAB.setOnClickListener {
-            seleccionarImgDialog()
+            if (isChatsEnabled) seleccionarImgDialog()
+            else Toast.makeText(this, "El envío de imágenes está deshabilitado.", Toast.LENGTH_SHORT).show()
         }
 
         binding.enviarFAB.setOnClickListener {
-            validarInfo()
+            if (isChatsEnabled) validarInfo()
+            else Toast.makeText(this, "El chat está en mantenimiento.", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    /**
+     * Verifica en tiempo real si el administrador ha deshabilitado los chats.
+     * Aplica un bloqueo visual en los controles de entrada.
+     */
+    private fun verificarModuloRBAC() {
+        val refModulos = mDatabase.child("Configuracion").child("Modulos")
+        refModulos.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    isChatsEnabled = snapshot.child("chats_enabled").getValue(Boolean::class.java) ?: true
+
+                    if (isChatsEnabled) {
+                        // Chat habilitado: Habilitar inputs
+                        binding.EtMensajeChat.isEnabled = true
+                        binding.EtMensajeChat.hint = "Escribe un mensaje..."
+                        binding.enviarFAB.isEnabled = true
+                        binding.adjuntarFAB.isEnabled = true
+                    } else {
+                        // Chat deshabilitado: Bloquear inputs
+                        binding.EtMensajeChat.isEnabled = false
+                        binding.EtMensajeChat.hint = "Chat pausado por mantenimiento"
+                        binding.EtMensajeChat.setText("") // Limpiar si estaba escribiendo algo
+                        binding.enviarFAB.isEnabled = false
+                        binding.adjuntarFAB.isEnabled = false
+
+                        Toast.makeText(this@ChatActivity, "El servicio de mensajería está pausado temporalmente.", Toast.LENGTH_LONG).show()
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        })
     }
 
     private fun cargarMiInformacion (){
@@ -86,12 +124,8 @@ class ChatActivity : AppCompatActivity() {
             .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     miNombre = "${snapshot.child("nombres").value}"
-
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                override fun onCancelled(error: DatabaseError) {}
             })
     }
 
@@ -106,9 +140,7 @@ class ChatActivity : AppCompatActivity() {
                         try {
                             val modeloChat = ds.getValue(ModeloChat::class.java)
                             mensajeArrayList.add(modeloChat!!)
-                        }catch (e:Exception){
-
-                        }
+                        }catch (e:Exception){}
                     }
                     val adaptadorChat = AdaptadorChat(this@ChatActivity, mensajeArrayList)
                     binding.chatsRv.adapter = adaptadorChat
@@ -118,14 +150,13 @@ class ChatActivity : AppCompatActivity() {
                     linearLayoutManeger.stackFromEnd = true
                     binding.chatsRv.layoutManager = linearLayoutManeger
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                override fun onCancelled(error: DatabaseError) {}
             })
     }
 
     private fun validarInfo() {
+        if (!isChatsEnabled) return // Barrera de seguridad
+
         val mensaje = binding.EtMensajeChat.text.toString().trim()
         val tiempo = Constantes.obtenerTiempoDis()
 
@@ -155,31 +186,22 @@ class ChatActivity : AppCompatActivity() {
                                 .load(imagen)
                                 .placeholder(R.drawable.img_perfil)
                                 .into(binding.toolbarIv)
-                        }catch (e: Exception){
-
-                        }
-
-
-                    }catch (e:Exception){
-
-                    }
+                        }catch (e: Exception){}
+                    }catch (e:Exception){}
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                override fun onCancelled(error: DatabaseError) {}
             })
     }
 
     private fun seleccionarImgDialog(){
         val popupMenu = PopupMenu(this, binding.adjuntarFAB)
-
         popupMenu.menu.add(Menu.NONE,1,1, "Cámara")
         popupMenu.menu.add(Menu.NONE,2,2, "Galería")
-
         popupMenu.show()
 
         popupMenu.setOnMenuItemClickListener { menuItem->
+            if (!isChatsEnabled) return@setOnMenuItemClickListener true // Barrera de seguridad
+
             val itemId = menuItem.itemId
             if (itemId == 1){
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
@@ -199,7 +221,6 @@ class ChatActivity : AppCompatActivity() {
             }
             true
         }
-
     }
 
     private fun imagenGaleria(){
@@ -208,33 +229,23 @@ class ChatActivity : AppCompatActivity() {
         resultadoGaleria_ARL.launch(intent)
     }
 
-    private val resultadoGaleria_ARL =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()){resultado->
-            if (resultado.resultCode == Activity.RESULT_OK){
-                val data = resultado.data
-                imagenUri = data!!.data
-                subirImgStorage()
-            }else{
-                Toast.makeText(
-                    this,
-                    "Cancelado",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+    private val resultadoGaleria_ARL = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){resultado->
+        if (resultado.resultCode == Activity.RESULT_OK){
+            val data = resultado.data
+            imagenUri = data!!.data
+            subirImgStorage()
+        }else{
+            Toast.makeText(this, "Cancelado", Toast.LENGTH_SHORT).show()
         }
+    }
 
-    private val concederPermisoAlmacenamiento =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()){esConcedido->
-            if (esConcedido){
-                imagenGaleria()
-            }else{
-                Toast.makeText(
-                    this,
-                    "El permiso de almacenamiento ha sido denegada",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+    private val concederPermisoAlmacenamiento = registerForActivityResult(ActivityResultContracts.RequestPermission()){esConcedido->
+        if (esConcedido){
+            imagenGaleria()
+        }else{
+            Toast.makeText(this, "El permiso de almacenamiento ha sido denegada", Toast.LENGTH_SHORT).show()
         }
+    }
 
     private fun abrirCamara(){
         val contentValues = ContentValues()
@@ -248,38 +259,29 @@ class ChatActivity : AppCompatActivity() {
         resultadoCamara_ARL.launch(intent)
     }
 
-    private val resultadoCamara_ARL =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()){resultado->
-            if (resultado.resultCode == Activity.RESULT_OK){
-                //Subir imagen
-                subirImgStorage()
-            }else{
-                Toast.makeText(
-                    this,
-                    "Cancelado",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+    private val resultadoCamara_ARL = registerForActivityResult(ActivityResultContracts.StartActivityForResult()){resultado->
+        if (resultado.resultCode == Activity.RESULT_OK){
+            subirImgStorage()
+        }else{
+            Toast.makeText(this, "Cancelado", Toast.LENGTH_SHORT).show()
         }
+    }
 
-    private val concederPermisoCamara =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){resultado->
-            var concedidoTodos = true
-            for (seConcede in resultado.values){
-                concedidoTodos = concedidoTodos && seConcede
-            }
-            if (concedidoTodos){
-                abrirCamara()
-            }else{
-                Toast.makeText(
-                    this,
-                    "El permiso de la cámara o almacenamiento ha sido denegado, o ambos fueron denegados",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
+    private val concederPermisoCamara = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()){resultado->
+        var concedidoTodos = true
+        for (seConcede in resultado.values){
+            concedidoTodos = concedidoTodos && seConcede
         }
+        if (concedidoTodos){
+            abrirCamara()
+        }else{
+            Toast.makeText(this, "El permiso de la cámara o almacenamiento ha sido denegado, o ambos fueron denegados", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private fun subirImgStorage(){
+        if (!isChatsEnabled) return // Barrera de seguridad
+
         progressDialog.setMessage("Subiendo imagen")
         progressDialog.show()
 
@@ -289,24 +291,19 @@ class ChatActivity : AppCompatActivity() {
         val storageRef = FirebaseStorage.getInstance().getReference(nombreRutaImg)
         storageRef.putFile(imagenUri!!)
             .addOnSuccessListener {taskSnapshot->
-                val uriTask = taskSnapshot.storage.downloadUrl
-                while (!uriTask.isSuccessful);
-
-                val urlImagen = uriTask.result.toString()
-                if (uriTask.isSuccessful){
-                    enviarMensaje(Constantes.MENSAJE_TIPO_IMAGEN,urlImagen, tiempo)
+                taskSnapshot.storage.downloadUrl.addOnSuccessListener { uri ->
+                    val urlImagen = uri.toString()
+                    enviarMensaje(Constantes.MENSAJE_TIPO_IMAGEN, urlImagen, tiempo)
                 }
             }
             .addOnFailureListener {e->
-                Toast.makeText(
-                    this,
-                    "No se pudo subir la imagen debido a ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "No se pudo subir la imagen debido a ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
     private fun enviarMensaje(tipoMensaje : String, mensaje : String, tiempo : Long){
+        if (!isChatsEnabled) return // Última barrera antes de escribir en Firebase
+
         progressDialog.setMessage("Enviando mensaje")
         progressDialog.show()
 
@@ -336,11 +333,7 @@ class ChatActivity : AppCompatActivity() {
             }
             .addOnFailureListener {e->
                 progressDialog.dismiss()
-                Toast.makeText(
-                    this,
-                    "No se pudo enviar el mensaje debido a ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "No se pudo enviar el mensaje debido a ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -357,10 +350,8 @@ class ChatActivity : AppCompatActivity() {
             notificationJo.put("to", "$recibimosToken")
             notificationJo.put("notification", notificationNotificionJo)
             notificationJo.put("data", notificationDataJo)
-        }catch (e: Exception){
+        }catch (e: Exception){}
 
-        }
-        
         enviarNotificacion(notificationJo)
     }
 
@@ -383,18 +374,14 @@ class ChatActivity : AppCompatActivity() {
                 return headers
             }
         }
-
         Volley.newRequestQueue(this).add(jsonObjectRequest)
-
     }
-
 
     private fun actualizarEstado(estado : String){
         val ref = FirebaseDatabase.getInstance().reference.child("Usuarios").child(firebaseAuth.uid!!)
         val hashMap = HashMap<String, Any>()
         hashMap["estado"] = estado
-        ref!!.updateChildren(hashMap)
-
+        ref.updateChildren(hashMap)
     }
 
     override fun onResume() {
@@ -406,7 +393,4 @@ class ChatActivity : AppCompatActivity() {
         super.onPause()
         actualizarEstado("offline")
     }
-
-
-
 }

@@ -21,28 +21,27 @@ import com.mh.mundihome.Filtro.FiltrarAnuncio
 import com.mh.mundihome.Modelo.ModeloAnuncio
 import com.mh.mundihome.R
 import com.mh.mundihome.databinding.ItemAnuncioNuevaVersionBinding
+import java.text.DecimalFormat
 
-class AdaptadorAnuncio : RecyclerView.Adapter<AdaptadorAnuncio.HolderAnuncio>, Filterable{
+class AdaptadorAnuncio : RecyclerView.Adapter<AdaptadorAnuncio.HolderAnuncio>, Filterable {
 
-    private lateinit var binding : ItemAnuncioNuevaVersionBinding
-
-    private var context : Context
-    var anuncioArrayList : ArrayList<ModeloAnuncio>
-    private var firebaeAuth : FirebaseAuth
-    private var filtroLista : ArrayList<ModeloAnuncio>
-    private var filtro : FiltrarAnuncio ?= null
+    private var context: Context
+    var anuncioArrayList: ArrayList<ModeloAnuncio>
+    private var firebaseAuth: FirebaseAuth
+    private var filtroLista: ArrayList<ModeloAnuncio>
+    private var filtro: FiltrarAnuncio? = null
 
     constructor(context: Context, anuncioArrayList: ArrayList<ModeloAnuncio>) {
         this.context = context
         this.anuncioArrayList = anuncioArrayList
-        firebaeAuth = FirebaseAuth.getInstance()
+        this.firebaseAuth = FirebaseAuth.getInstance()
         this.filtroLista = anuncioArrayList
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HolderAnuncio {
-        binding = ItemAnuncioNuevaVersionBinding.inflate(LayoutInflater.from(context), parent, false)
-        return HolderAnuncio(binding.root)
+        // CORRECCIÓN: El binding se infla de forma local para cada Holder
+        val binding = ItemAnuncioNuevaVersionBinding.inflate(LayoutInflater.from(context), parent, false)
+        return HolderAnuncio(binding)
     }
 
     override fun getItemCount(): Int {
@@ -52,25 +51,38 @@ class AdaptadorAnuncio : RecyclerView.Adapter<AdaptadorAnuncio.HolderAnuncio>, F
     override fun onBindViewHolder(holder: HolderAnuncio, position: Int) {
         val modeloAnuncio = anuncioArrayList[position]
 
+        // --- EXTRACCIÓN DE DATOS ---
         val titulo = modeloAnuncio.titulo
         val descripcion = modeloAnuncio.descripcion
         val direccion = modeloAnuncio.direccion
-        val condicion = modeloAnuncio.condicion
-        val precio = modeloAnuncio.precio
+        val condicion = modeloAnuncio.estado // Usamos estado o condicion según tu modelo
+        val precio = modeloAnuncio.precio // Ahora es Long
         val tiempo = modeloAnuncio.tiempo
+
+        // Formatear precio para que aparezca con puntos (ej: 200.000.000)
+        val mFormatter = DecimalFormat("###,###,###")
+        val precioFormateado = "$ ${mFormatter.format(precio)}"
 
         val formatoFecha = Constantes.obtenerFecha(tiempo)
 
-        cargarPrimeraImgAnuncio(modeloAnuncio,holder)
+        // Cargar datos en la UI
+        holder.binding.TvTitulo.text = titulo
+        holder.binding.TvDescripcion.text = descripcion
+        holder.binding.TvDireccion.text = direccion
+        holder.binding.TvCondicion.text = condicion
+        holder.binding.TvPrecio.text = precioFormateado // Se asigna el String formateado
+        holder.binding.TvFecha.text = formatoFecha
 
+        // Funciones auxiliares
+        cargarPrimeraImgAnuncio(modeloAnuncio, holder)
         comprobarFavorito(modeloAnuncio, holder)
 
-        holder.Tv_titulo.text = titulo
-        holder.Tv_descripcion.text = descripcion
-        holder.Tv_direccion.text = direccion
-        holder.Tv_condicion.text = condicion
-        holder.Tv_precio.text = precio
-        holder.Tv_fecha.text = formatoFecha
+        // Color según condición (Ejemplo de personalización)
+        when (condicion) {
+            "Disponible" -> holder.binding.TvCondicion.setTextColor(Color.parseColor("#48C9B0"))
+            "Vendido" -> holder.binding.TvCondicion.setTextColor(Color.parseColor("#E74C3C"))
+            else -> holder.binding.TvCondicion.setTextColor(Color.parseColor("#5DADE2"))
+        }
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, DetalleAnuncio::class.java)
@@ -78,93 +90,65 @@ class AdaptadorAnuncio : RecyclerView.Adapter<AdaptadorAnuncio.HolderAnuncio>, F
             context.startActivity(intent)
         }
 
-        if (condicion.equals("Nuevo")){
-            holder.Tv_condicion.setTextColor(Color.parseColor("#48C9B0"))
-        }else if (condicion.equals("Usado")){
-            holder.Tv_condicion.setTextColor(Color.parseColor("#5DADE2"))
-        }else if (condicion.equals("Renovado")){
-            holder.Tv_condicion.setTextColor(Color.parseColor("#A569BD"))
-        }
+        holder.binding.IbFav.setOnClickListener {
+            // El campo favorito ahora se maneja dentro del objeto modeloAnuncio
+            val uid = firebaseAuth.uid
+            if (uid == null) {
+                return@setOnClickListener
+            }
 
-
-        holder.Ib_fav.setOnClickListener {
-            val favorito = modeloAnuncio.favorito
-
-            if (favorito){
-                //Favorito = true
+            // Nota: Aquí solemos usar un booleano temporal.
+            // La lógica de Firebase en comprobarFavorito actualizará el icono automáticamente.
+            val esFavorito = snapshotFavoritos[modeloAnuncio.id] ?: false
+            if (esFavorito) {
                 Constantes.eliminarAnuncioFav(context, modeloAnuncio.id)
-            }else{
-                //Favorito = false
+            } else {
                 Constantes.agregarAnuncioFav(context, modeloAnuncio.id)
             }
         }
     }
 
-    private fun comprobarFavorito(modeloAnuncio: ModeloAnuncio, holder: AdaptadorAnuncio.HolderAnuncio) {
+    // Mapa temporal para evitar parpadeos en los favoritos (Opcional, mejora UX)
+    private val snapshotFavoritos = HashMap<String, Boolean>()
+
+    private fun comprobarFavorito(modeloAnuncio: ModeloAnuncio, holder: HolderAnuncio) {
+        val uid = firebaseAuth.uid ?: return
         val ref = FirebaseDatabase.getInstance().getReference("Usuarios")
-        ref.child(firebaeAuth.uid!!).child("Favoritos").child(modeloAnuncio.id)
-            .addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val favorito = snapshot.exists()
-                    modeloAnuncio.favorito = favorito
 
-                    if (favorito){
-                        holder.Ib_fav.setImageResource(R.drawable.ic_anuncio_es_favorito)
-                    }else{
-                        holder.Ib_fav.setImageResource(R.drawable.ic_no_favorito)
+        ref.child(uid).child("Favoritos").child(modeloAnuncio.id)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        holder.binding.IbFav.setImageResource(R.drawable.ic_anuncio_es_favorito)
+                    } else {
+                        holder.binding.IbFav.setImageResource(R.drawable.ic_no_favorito)
                     }
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                override fun onCancelled(error: DatabaseError) {}
             })
-
     }
 
-    private fun cargarPrimeraImgAnuncio(modeloAnuncio: ModeloAnuncio, holder: AdaptadorAnuncio.HolderAnuncio) {
-        val idAnuncio = modeloAnuncio.id
-
+    private fun cargarPrimeraImgAnuncio(modeloAnuncio: ModeloAnuncio, holder: HolderAnuncio) {
         val ref = FirebaseDatabase.getInstance().getReference("Anuncios")
-        ref.child(idAnuncio).child("Imagenes").limitToFirst(1)
-            .addValueEventListener(object : ValueEventListener{
+        ref.child(modeloAnuncio.id).child("Imagenes").limitToFirst(1)
+            .addListenerForSingleValueEvent(object : ValueEventListener { // Cambiado aquí también
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    for (ds in snapshot.children){
+                    for (ds in snapshot.children) {
                         val imagenUrl = "${ds.child("imagenUrl").value}"
-                        try {
-                            Glide.with(context)
-                                .load(imagenUrl)
-                                .placeholder(R.drawable.ic_imagen)
-                                .into(holder.imagenIv)
-                        }catch (e:Exception){
-
-                        }
+                        Glide.with(context).load(imagenUrl).placeholder(R.drawable.ic_imagen).into(holder.binding.imagenIv)
                     }
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                override fun onCancelled(error: DatabaseError) {}
             })
     }
 
-    inner class HolderAnuncio(itemView : View) : RecyclerView.ViewHolder(itemView){
-        var imagenIv = binding.imagenIv
-        var Tv_titulo = binding.TvTitulo
-        var Tv_descripcion = binding.TvDescripcion
-        var Tv_direccion = binding.TvDireccion
-        var Tv_condicion = binding.TvCondicion
-        var Tv_precio = binding.TvPrecio
-        var Tv_fecha = binding.TvFecha
-        var Ib_fav = binding.IbFav
-    }
+    inner class HolderAnuncio(val binding: ItemAnuncioNuevaVersionBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun getFilter(): Filter {
-        if (filtro == null){
+        if (filtro == null) {
             filtro = FiltrarAnuncio(this, filtroLista)
         }
         return filtro as FiltrarAnuncio
     }
-
-
 }

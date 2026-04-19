@@ -199,4 +199,7 @@
     <string name="Txt_mensaje_eliminar">¿Estás seguro(a) que deseas eliminar tu cuenta?. Esta acción no se puede deshacer</string>
     <string name="Btn_eliminar_mi_cuenta">Eliminar mi cuenta</string>
 
+    <string name="open">Abrir</string>
+    <string name="close">Cerrar</string>
+
 </resources>

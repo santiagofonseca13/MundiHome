@@ -4,7 +4,6 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.CountDownTimer
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -32,13 +31,15 @@ class FragmentCuenta : Fragment() {
     private lateinit var mContext : Context
     private lateinit var progressDialog : ProgressDialog
 
+    // Variable para control RBAC
+    private var isCuentaEnabled = true
+
     override fun onAttach(context: Context) {
         mContext = context
         super.onAttach(context)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentCuentaBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
@@ -52,21 +53,23 @@ class FragmentCuenta : Fragment() {
 
         firebaseAuth = FirebaseAuth.getInstance()
 
-        leerInfo()
+        verificarModuloRBAC()
 
         binding.BtnEditarPerfil.setOnClickListener {
-            startActivity(Intent(mContext, EditarPerfil::class.java))
+            if (isCuentaEnabled) startActivity(Intent(mContext, EditarPerfil::class.java))
         }
 
         binding.BtnCambiarPass.setOnClickListener {
-            startActivity(Intent(mContext, CambiarPassword::class.java))
+            if (isCuentaEnabled) startActivity(Intent(mContext, CambiarPassword::class.java))
         }
 
         binding.BtnVerificarCuenta.setOnClickListener {
-            verificarCuenta()
+            if (isCuentaEnabled) verificarCuenta()
         }
 
         binding.BtnEliminarAnuncios.setOnClickListener {
+            if (!isCuentaEnabled) return@setOnClickListener
+
             val alertDialog = MaterialAlertDialogBuilder(mContext)
             alertDialog.setTitle("Eliminar todos mis anuncios")
                 .setMessage("¿Estás seguro(a) de eliminar todos tus anuncios?")
@@ -80,62 +83,112 @@ class FragmentCuenta : Fragment() {
         }
 
         binding.BtnEliminarCuenta.setOnClickListener {
-             startActivity(Intent(mContext, Eliminar_cuenta::class.java))
+            if (isCuentaEnabled) startActivity(Intent(mContext, Eliminar_cuenta::class.java))
         }
 
+        // --- CORRECCIÓN: Botón de Cerrar Sesión Seguro ---
         binding.BtnCerrarSesion.setOnClickListener {
-            actualizarEstado()
-            cerrarSesion()
+            cerrarSesionSeguro()
         }
     }
 
-    private fun cerrarSesion(){
-        object : CountDownTimer(3000, 1000){
-            override fun onTick(millisUntilFinished: Long) {
+    /**
+     * Función que unifica la actualización del estado "Offline" y el cierre de sesión,
+     * asegurando que no haya bloqueos, esperas innecesarias ni NullPointerExceptions.
+     */
+    private fun cerrarSesionSeguro() {
+        val uid = firebaseAuth.uid
+        if (uid == null) {
+            irALogin()
+            return
+        }
+        
+        progressDialog.setMessage("Cerrando sesión...")
+        progressDialog.show()
 
-            }
-
-            override fun onFinish() {
-                //Pasado 3 segundos se va a ejecutar estas líneas de código
-                firebaseAuth.signOut()
-                startActivity(Intent(mContext, OpcionesLogin::class.java))
-                activity?.finishAffinity()
-            }
-
-        }.start()
-    }
-
-    private fun actualizarEstado(){
-        val ref = FirebaseDatabase.getInstance().reference.child("Usuarios").child(firebaseAuth.uid!!)
-
+        val ref = FirebaseDatabase.getInstance().reference.child("Usuarios").child(uid)
         val hashMap = HashMap<String, Any>()
         hashMap["estado"] = "Offline"
-        ref!!.updateChildren(hashMap)
+
+        // Actualizamos Firebase. Usamos addOnCompleteListener para que, sin importar
+        // si hay internet o falla, el usuario siempre pueda salir de la app.
+        ref.updateChildren(hashMap).addOnCompleteListener {
+            firebaseAuth.signOut()
+            if (progressDialog.isShowing) progressDialog.dismiss()
+            irALogin()
+        }
+    }
+
+    /**
+     * Valida que el fragmento siga vivo (isAdded) antes de lanzar el Intent,
+     * evitando crashes si el usuario minimizó la app mientras cerraba sesión.
+     */
+    private fun irALogin() {
+        if (isAdded && activity != null) {
+            val intent = Intent(activity, OpcionesLogin::class.java)
+            startActivity(intent)
+            activity?.finishAffinity()
+        }
+    }
+
+    private fun verificarModuloRBAC() {
+        val refModulos = FirebaseDatabase.getInstance().getReference("Configuracion/Modulos")
+        refModulos.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                if (snapshot.exists()) {
+                    isCuentaEnabled = snapshot.child("cuenta_enabled").getValue(Boolean::class.java) ?: true
+
+                    if (isCuentaEnabled) {
+                        binding.BtnEditarPerfil.visibility = View.VISIBLE
+                        binding.BtnCambiarPass.visibility = View.VISIBLE
+                        binding.BtnEliminarAnuncios.visibility = View.VISIBLE
+                        binding.BtnEliminarCuenta.visibility = View.VISIBLE
+                        leerInfo()
+                    } else {
+                        binding.BtnEditarPerfil.visibility = View.GONE
+                        binding.BtnCambiarPass.visibility = View.GONE
+                        binding.BtnEliminarAnuncios.visibility = View.GONE
+                        binding.BtnEliminarCuenta.visibility = View.GONE
+                        binding.BtnVerificarCuenta.visibility = View.GONE
+
+                        binding.TvEmail.text = "Correo Oculto (Mantenimiento)"
+                        binding.TvNombres.text = "Usuario"
+                        binding.TvNacimiento.text = "***"
+                        binding.TvTelefono.text = "***"
+                        binding.TvMiembro.text = "---"
+                        binding.TvEstadoCuenta.text = "No disponible"
+                        binding.IvPerfil.setImageResource(R.drawable.img_perfil)
+                    }
+                }
+            }
+            override fun onCancelled(error: DatabaseError) {}
+        })
     }
 
     private fun eliminarTodosMiAnuncios() {
-        val miUid = firebaseAuth.uid
+        val miUid = firebaseAuth.uid ?: return
         val ref = FirebaseDatabase.getInstance().getReference("Anuncios").orderByChild("uid").equalTo(miUid)
         ref.addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 for (ds in snapshot.children){
                     ds.ref.removeValue()
                 }
-
-                Toast.makeText(mContext, "Se han eliminado todos sus anuncios",Toast.LENGTH_SHORT).show()
+                if (isAdded) Toast.makeText(mContext, "Se han eliminado todos sus anuncios",Toast.LENGTH_SHORT).show()
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                TODO("Not yet implemented")
-            }
+            override fun onCancelled(error: DatabaseError) {}
         })
     }
 
     private fun leerInfo() {
+        if (!isCuentaEnabled) return
+        val uid = firebaseAuth.uid ?: return
+
         val ref = FirebaseDatabase.getInstance().getReference("Usuarios")
-        ref.child("${firebaseAuth.uid}")
+        ref.child(uid)
             .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
+                    if (!isCuentaEnabled || !isAdded) return
+
                     val nombres = "${snapshot.child("nombres").value}"
                     val email = "${snapshot.child("email").value}"
                     val imagen = "${snapshot.child("urlImagenPerfil").value}"
@@ -146,82 +199,52 @@ class FragmentCuenta : Fragment() {
                     val proveedor = "${snapshot.child("proveedor").value}"
 
                     val cod_tel = codTelefono+telefono
-
-                    if (tiempo == "null"){
-                        tiempo = "0"
-                    }
-
+                    if (tiempo == "null") tiempo = "0"
                     val for_tiempo = Constantes.obtenerFecha(tiempo.toLong())
 
-                    //Seteamos información
                     binding.TvEmail.text = email
                     binding.TvNombres.text = nombres
                     binding.TvNacimiento.text = f_nac
                     binding.TvTelefono.text = cod_tel
                     binding.TvMiembro.text = for_tiempo
 
-                    //Seteo de la imagen
                     try {
                         Glide.with(mContext)
                             .load(imagen)
                             .placeholder(R.drawable.img_perfil)
                             .into(binding.IvPerfil)
-                    }catch (e:Exception){
-                        Toast.makeText(
-                            mContext,
-                            "${e.message}",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                    }catch (e:Exception){ }
 
                     if (proveedor == "Email"){
-                        val esVerificado = firebaseAuth.currentUser!!.isEmailVerified
+                        val esVerificado = firebaseAuth.currentUser?.isEmailVerified == true
                         if (esVerificado){
-                            //Si el usuario está verificado
                             binding.BtnVerificarCuenta.visibility = View.GONE
                             binding.TvEstadoCuenta.text = "Verificado"
                         }else{
-                            //Si el usuario NO está verificado
                             binding.BtnVerificarCuenta.visibility = View.VISIBLE
                             binding.TvEstadoCuenta.text = "No verificado"
                         }
                     }else{
-                        //Usuario ingresó a la aplicación con una cuenta de Google
                         binding.BtnVerificarCuenta.visibility = View.GONE
                         binding.TvEstadoCuenta.text = "Verificado"
                     }
-
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
+                override fun onCancelled(error: DatabaseError) {}
             })
     }
 
     private fun verificarCuenta(){
-        progressDialog.setMessage("Enviando instrucciones de verificación a su correo electrónico")
+        progressDialog.setMessage("Enviando instrucciones de verificación...")
         progressDialog.show()
 
-        firebaseAuth.currentUser!!.sendEmailVerification()
-            .addOnSuccessListener {
-                progressDialog.dismiss()
-                Toast.makeText(
-                    mContext,
-                    "Las instrucciones fueron enviadas a su correo registrado",
-                    Toast.LENGTH_SHORT
-                ).show()
+        firebaseAuth.currentUser?.sendEmailVerification()
+            ?.addOnSuccessListener {
+                if (progressDialog.isShowing) progressDialog.dismiss()
+                Toast.makeText(mContext, "Instrucciones enviadas a su correo", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener {e->
-                progressDialog.dismiss()
-                Toast.makeText(
-                    mContext,
-                    "${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-
+            ?.addOnFailureListener {e->
+                if (progressDialog.isShowing) progressDialog.dismiss()
+                Toast.makeText(mContext, "${e.message}", Toast.LENGTH_SHORT).show()
             }
-
     }
-
 }

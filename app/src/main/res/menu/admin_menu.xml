@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+                android:id="@+id/nav_dashboard"
+                android:icon="@drawable/ic_dashboard"
+                android:title="Dashboard" />
+
+        <item
+                android:id="@+id/nav_usuarios"
+                android:icon="@drawable/ic_personas"
+                android:title="Gestión de Usuarios" />
+
+        <item
+                android:id="@+id/nav_anuncios"
+                android:icon="@drawable/ic_anuncios"
+                android:title="Moderación de Anuncios" />
+
+        <item
+                android:id="@+id/nav_resenas"
+                android:icon="@drawable/ic_comentarios"
+                android:title="Reseñas y Reportes" />
+
+        <item
+                android:id="@+id/nav_modulos"
+                android:icon="@drawable/ic_security"
+                android:title="Control de Módulos (RBAC)" />
+    </group>
+
+    <item android:title="Cuenta">
+        <menu>
+            <item
+                    android:id="@+id/nav_perfil"
+                    android:icon="@drawable/ic_persona"
+                    android:title="Mi Perfil / Ajustes" />
+            <item
+                    android:id="@+id/nav_salir"
+                    android:icon="@drawable/ic_logout"
+                    android:title="Cerrar Sesión" />
+        </menu>
+    </item>
+</menu>
