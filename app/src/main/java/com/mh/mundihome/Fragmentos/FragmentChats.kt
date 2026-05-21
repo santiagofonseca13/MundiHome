@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log // Added import for Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +34,8 @@ class FragmentChats : Fragment() {
 
     // Variable para controlar si el módulo está activo (RBAC)
     private var isChatsEnabled = true
+
+    private val TAG = "FragmentChats" // Tag for logging
 
     override fun onAttach(context: Context) {
         mContext = context
@@ -67,7 +70,9 @@ class FragmentChats : Fragment() {
                 try {
                     val consulta = filtro.toString()
                     adaptadorChats.filter.filter(consulta)
-                }catch (e:Exception){ }
+                }catch (e:Exception){
+                    Log.e(TAG, "Error filtering chats: ${e.message}")
+                }
             }
 
             override fun afterTextChanged(p0: Editable?) {}
@@ -83,6 +88,7 @@ class FragmentChats : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 if (snapshot.exists()) {
                     isChatsEnabled = snapshot.child("chats_enabled").getValue(Boolean::class.java) ?: true
+                    Log.d(TAG, "verificarModuloRBAC: chats_enabled = $isChatsEnabled")
 
                     if (isChatsEnabled) {
                         // El módulo está activo: Mostramos la vista y cargamos los datos
@@ -100,21 +106,32 @@ class FragmentChats : Fragment() {
 
                         Toast.makeText(mContext, "El módulo de chats está en mantenimiento.", Toast.LENGTH_SHORT).show()
                     }
+                } else {
+                    Log.d(TAG, "verificarModuloRBAC: Configuracion/Modulos snapshot does not exist.")
                 }
             }
-            override fun onCancelled(error: DatabaseError) {}
+            override fun onCancelled(error: DatabaseError) {
+                Log.e(TAG, "verificarModuloRBAC: DatabaseError: ${error.message}")
+            }
         })
     }
 
     private fun cargarChats() {
+        Log.d(TAG, "cargarChats: Attempting to load chats. isChatsEnabled = $isChatsEnabled")
         // Doble validación: Si está deshabilitado, no solicitamos nada a Firebase
-        if (!isChatsEnabled) return
+        if (!isChatsEnabled) {
+            Log.d(TAG, "cargarChats: Chats are disabled, not loading.")
+            return
+        }
 
         val ref = FirebaseDatabase.getInstance().getReference("Chats")
         ref.addValueEventListener(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
                 // Validación por si se desactiva justo mientras llegan los datos
-                if (!isChatsEnabled) return
+                if (!isChatsEnabled) {
+                    Log.d(TAG, "cargarChats: Chats disabled during data retrieval, aborting.")
+                    return
+                }
 
                 chatsArrayList.clear()
                 for (ds in snapshot.children){
@@ -125,12 +142,13 @@ class FragmentChats : Fragment() {
                         chatsArrayList.add(modeloChats)
                     }
                 }
+                Log.d(TAG, "cargarChats: Found ${chatsArrayList.size} chats for miUid: $miUid")
                 // Como el adaptador ya está asignado al RecyclerView, solo notificamos los cambios
                 adaptadorChats.notifyDataSetChanged()
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Puedes mostrar un error aquí si falla la conexión
+                Log.e(TAG, "cargarChats: DatabaseError: ${error.message}") // Replaced TODO
             }
         })
     }

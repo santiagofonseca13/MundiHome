@@ -161,7 +161,7 @@ class EditarPerfil : AppCompatActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+                    // Manejo de errores para cargarInfo, puedes añadir un Log.e aquí si lo deseas
                 }
             })
     }
@@ -170,7 +170,8 @@ class EditarPerfil : AppCompatActivity() {
         progressDialog.setMessage("Subiendo imagen a Storage")
         progressDialog.show()
 
-        val rutaImagen = "imagenesPerfil/" + firebaseAuth.uid
+        // MODIFICACIÓN: La ruta debe coincidir con las reglas de Firebase Storage
+        val rutaImagen = "Usuarios/" + firebaseAuth.uid + "/imagen_perfil"
         val ref = FirebaseStorage.getInstance().getReference(rutaImagen)
         ref.putFile(imageUri!!)
             .addOnSuccessListener { taskSnapShot->

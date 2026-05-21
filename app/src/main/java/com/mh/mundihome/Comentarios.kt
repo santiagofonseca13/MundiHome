@@ -3,6 +3,7 @@ package com.mh.mundihome
 import android.app.ProgressDialog
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -27,12 +28,21 @@ class Comentarios : AppCompatActivity() {
     private lateinit var comentarioArrayList : ArrayList<ModeloComentario>
     private lateinit var adaptadorComentario : AdaptadorComentario
 
+    private val TAG = "ComentariosActivity"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityComentariosBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         uidVendedor = intent.getStringExtra("uidVendedor").toString()
+
+        if (uidVendedor.isEmpty() || uidVendedor == "null") {
+            Toast.makeText(this, "UID de vendedor no válido.", Toast.LENGTH_SHORT).show()
+            Log.e(TAG, "UID de vendedor es nulo o inválido.")
+            finish()
+            return
+        }
 
         progressDialog = ProgressDialog(this)
         progressDialog.setTitle("Por favor espere")
@@ -60,8 +70,14 @@ class Comentarios : AppCompatActivity() {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     comentarioArrayList.clear()
                     for (ds in snapshot.children){
-                        val modelo = ds.getValue(ModeloComentario::class.java)
-                        comentarioArrayList.add(modelo!!)
+                        try {
+                            val modelo = ds.getValue(ModeloComentario::class.java)
+                            if (modelo != null) {
+                                comentarioArrayList.add(modelo)
+                            }
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Error al parsear comentario: ${e.message}")
+                        }
                     }
 
                     adaptadorComentario = AdaptadorComentario(this@Comentarios, comentarioArrayList)
@@ -69,7 +85,8 @@ class Comentarios : AppCompatActivity() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
+                    Log.e(TAG, "Error al cargar comentarios: ${error.message}")
+                    Toast.makeText(this@Comentarios, "Error al cargar comentarios.", Toast.LENGTH_SHORT).show()
                 }
             })
     }
@@ -133,13 +150,6 @@ class Comentarios : AppCompatActivity() {
                     "${e.message}",
                     Toast.LENGTH_SHORT).show()
             }
-
-
-
-
-
-
-
 
     }
 }
