@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/santiagofonseca13/MundiHome/blob/main/app/src/main/res/drawable/Image_Editor.png" alt="Logo de MundiHome" width="200">
+  <img src="https://github.com/santiagofonseca13/MundiHome/blob/main/app/src/main/res/drawable/Image_Editor.png" alt="Logo de MundiHome" width="400">
 </p>
 
 <h1 align="center">🏡 MundiHome</h1>
