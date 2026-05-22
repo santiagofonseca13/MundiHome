@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "562623807971-23492368jidevbe9k6vrkkorg6d605d5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mh.mundihome",
+            "certificate_hash": "067929ed1eab62b4bac201f09ce8a4611f0af27a"
+          }
+        },
+        {
           "client_id": "562623807971-gg9b2ejaevnnehfglh3f72lvurivdc28.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
