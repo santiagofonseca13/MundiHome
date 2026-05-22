@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -26,6 +27,8 @@ class OpcionesLogin : AppCompatActivity() {
     private lateinit var mGoogleSignInClient : GoogleSignInClient
     private lateinit var progressDialog : ProgressDialog
 
+    private val TAG = "OpcionesLogin"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityOpcionesLoginBinding.inflate(layoutInflater)
@@ -37,7 +40,6 @@ class OpcionesLogin : AppCompatActivity() {
 
         firebaseAuth = FirebaseAuth.getInstance()
 
-        // Configuramos Google Sign-In ANTES de comprobar la sesión
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -53,8 +55,7 @@ class OpcionesLogin : AppCompatActivity() {
     }
 
     private fun googleLogin() {
-        // Al hacer signOut() borramos el caché del dispositivo.
-        // Esto obliga a Google a mostrar la ventana de "Selecciona una cuenta"
+        // Forzamos el cierre de sesión para que siempre muestre el diálogo de selección de cuenta
         mGoogleSignInClient.signOut().addOnCompleteListener {
             val googleSignInIntent = mGoogleSignInClient.signInIntent
             googleSignInARL.launch(googleSignInIntent)
@@ -70,16 +71,19 @@ class OpcionesLogin : AppCompatActivity() {
                 val cuenta = task.getResult(ApiException::class.java)
                 val idToken = cuenta.idToken
 
-                // CORRECCIÓN 2: Evitar Crash si el token de Google viene nulo
                 if (idToken != null) {
                     autenticacionGoogle(idToken)
                 } else {
-                    Toast.makeText(this, "Error de Google: Token nulo", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "No se pudo obtener el token de Google. Intente de nuevo.", Toast.LENGTH_SHORT).show()
+                    Log.e(TAG, "El idToken de Google es nulo.")
                 }
             }catch (e: ApiException){
-                // EXPLICACIÓN: Si el error es ApiException 10 o 12500, tu SHA-1 no coincide en Firebase
+                Log.e(TAG, "Fallo en Google Sign-In con código de estado: ${e.statusCode}", e)
                 Toast.makeText(this, "Fallo en Google Sign-In: ${e.statusCode}", Toast.LENGTH_LONG).show()
             }
+        } else {
+            Log.d(TAG, "El inicio de sesión con Google fue cancelado o falló. Código de resultado: ${resultado.resultCode}")
+            Toast.makeText(this, "Inicio de sesión cancelado", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -90,20 +94,24 @@ class OpcionesLogin : AppCompatActivity() {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         firebaseAuth.signInWithCredential(credential)
             .addOnSuccessListener { resultadoAuth->
-
-                // CORRECCIÓN 3: Uso seguro de additionalUserInfo sin "!!"
                 val isNewUser = resultadoAuth.additionalUserInfo?.isNewUser ?: false
 
                 if (isNewUser){
                     llenarInfoBD()
                 }else{
                     val uid = firebaseAuth.uid
-                    if (uid != null) comprobarRol(uid) else cerrarDialogo()
+                    if (uid != null) {
+                        comprobarRol(uid)
+                    } else {
+                        cerrarDialogo()
+                        Toast.makeText(this, "Error: UID de Firebase nulo después del login.", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
             .addOnFailureListener { e->
                 cerrarDialogo()
-                Toast.makeText(this, "${e.message}",Toast.LENGTH_SHORT).show()
+                Log.e(TAG, "Fallo en la autenticación con Firebase: ${e.message}", e)
+                Toast.makeText(this, "Fallo en la autenticación: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
 
@@ -113,6 +121,7 @@ class OpcionesLogin : AppCompatActivity() {
         val uidUsuario = firebaseAuth.uid
         if (uidUsuario == null) {
             cerrarDialogo()
+            Log.e(TAG, "UID de Firebase nulo al intentar llenar la BD.")
             return
         }
 
@@ -144,6 +153,7 @@ class OpcionesLogin : AppCompatActivity() {
             }
             .addOnFailureListener { e->
                 cerrarDialogo()
+                Log.e(TAG, "Fallo al guardar en BD: ${e.message}", e)
                 Toast.makeText(this, "No se registró debido a ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
@@ -176,12 +186,12 @@ class OpcionesLogin : AppCompatActivity() {
 
             override fun onCancelled(error: DatabaseError) {
                 cerrarDialogo()
+                Log.e(TAG, "Error al leer rol: ${error.message}", error.toException())
                 Toast.makeText(this@OpcionesLogin, "Error al leer rol: ${error.message}", Toast.LENGTH_SHORT).show()
             }
         })
     }
 
-    // CORRECCIÓN 4: Prevención de WindowLeaked (Crash de interfaz)
     private fun cerrarDialogo() {
         if (!isFinishing && !isDestroyed && progressDialog.isShowing) {
             progressDialog.dismiss()

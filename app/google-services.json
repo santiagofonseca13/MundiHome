@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "562623807971",
+    "firebase_url": "https://mundi-55419-default-rtdb.firebaseio.com",
     "project_id": "mundi-55419",
     "storage_bucket": "mundi-55419.firebasestorage.app"
   },
@@ -12,7 +13,20 @@
           "package_name": "com.mh.mundihome"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "562623807971-gg9b2ejaevnnehfglh3f72lvurivdc28.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mh.mundihome",
+            "certificate_hash": "6dace4c41a2419806ff70a867f129e5fcbbd8ff7"
+          }
+        },
+        {
+          "client_id": "562623807971-s7029b3b4bgj32dc4h88ddnk3rqs5607.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCS_Tnekk9DhvRqXrxb5A4_AGpMoX0GVIs"
@@ -20,7 +34,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "562623807971-s7029b3b4bgj32dc4h88ddnk3rqs5607.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }
