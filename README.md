@@ -1,4 +1,8 @@
-# 🏡 MundiHome
+<p align="center">
+  <img src="https://github.com/santiagofonseca13/MundiHome/blob/main/app/src/main/res/drawable/Image_Editor.png" alt="Logo de MundiHome" width="200">
+</p>
+
+<h1 align="center">🏡 MundiHome</h1>
 
 MundiHome es una plataforma inmobiliaria diseñada específicamente para dinamizar el sector de bienes raíces en la región de Zipaquirá y sus alrededores. Su objetivo es facilitar la búsqueda, publicación y gestión de propiedades a través de una experiencia móvil fluida, moderna y eficiente.
 
