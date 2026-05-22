@@ -14,7 +14,7 @@ A nivel técnico, el sistema está construido bajo una **Arquitectura Modular** 
 
 Puedes probar la versión más reciente de MundiHome directamente en tu dispositivo Android.
 
-📥 **[Descargar MundiHome APK v1.0.0](https://raw.githubusercontent.com/santiagofonseca13/MundiHome/blob/main/APK/app-MundiHome.apk)**
+📥 **[Descargar MundiHome APK v1.0.0](https://raw.githubusercontent.com/santiagofonseca13/MundiHome/main/APK/app-MundiHome.apk)**
 
 > **Nota de instalación:** Al descargar el archivo fuera de la Google Play Store, es posible que tu teléfono solicite permisos especiales. Asegúrate de habilitar la opción de *"Instalar aplicaciones de orígenes desconocidos"* en la configuración de seguridad de tu dispositivo.
 
