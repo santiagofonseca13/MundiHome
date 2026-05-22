@@ -1,7 +1,7 @@
 <h1 align="center">🏡 MundiHome</h1>
 
 <p align="center">
-  <img src="https://github.com/santiagofonseca13/MundiHome/blob/main/app/src/main/res/drawable/Image_Editor.png" alt="Logo de MundiHome" width="200">
+  <img src="https://github.com/santiagofonseca13/MundiHome/blob/main/app/src/main/res/drawable/image_editor.png" alt="Logo de MundiHome" width="200">
 </p>
 
 MundiHome es una plataforma inmobiliaria diseñada específicamente para dinamizar el sector de bienes raíces en la región de Zipaquirá y sus alrededores. Su objetivo es facilitar la búsqueda, publicación y gestión de propiedades a través de una experiencia móvil fluida, moderna y eficiente.
@@ -14,7 +14,7 @@ A nivel técnico, el sistema está construido bajo una **Arquitectura Modular** 
 
 Puedes probar la versión más reciente de MundiHome directamente en tu dispositivo Android.
 
-📥 **[Descargar MundiHome APK v1.0.0]([ENLACE_A_TU_APK_AQUI])**
+📥 **[Descargar MundiHome APK v1.0.0](https://github.com/santiagofonseca13/MundiHome/APK/MundiHome.apk)**
 
 > **Nota de instalación:** Al descargar el archivo fuera de la Google Play Store, es posible que tu teléfono solicite permisos especiales. Asegúrate de habilitar la opción de *"Instalar aplicaciones de orígenes desconocidos"* en la configuración de seguridad de tu dispositivo.
 
@@ -35,7 +35,7 @@ Puedes probar la versión más reciente de MundiHome directamente en tu disposit
   - **UI:** View Binding y Componentes de Material Design
   - **Carga de Imágenes:** Librería Glide
   
-  ### Backend (BaaS - Backend as a Service)
+  ### Backend
   - **Plataforma:** Firebase
   - **Base de Datos:** Firebase Realtime Database
   - **Autenticación:** Firebase Authentication
